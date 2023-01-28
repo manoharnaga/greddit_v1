@@ -29,9 +29,12 @@ let userSchema = new Schema({
    password: {
       type: String,
       required: true
-   }
+   },
+   followers: [],
+   following: []
 },{
    timestamps: true,
    collection: 'users'
 })
+
 module.exports = mongoose.model('User', userSchema);

@@ -19,7 +19,19 @@ const Form1 = (props) => {
     emailid: "",
     age: "",
     phno: "",
-    password: ""
+    password: "",
+    followers: [
+      { id: 1, username: 'abc' },
+      { id: 2, username: 'abc1' },
+      { id: 3, username: 'abc2' },
+      { id: 4, username: 'abc3' }, 
+    ],
+    following: [
+      { id: 1, username: 'abc' },
+      { id: 2, username: 'abc1' },
+      { id: 3, username: 'abc2' },
+      { id: 4, username: 'abc3' },
+    ]
   });
 
   if(props.Loginval === "true"){      // already logged in!
@@ -48,10 +60,8 @@ const Form1 = (props) => {
   const handleRegister = (e) => {
     e.preventDefault();
     if(RegisterDisabled === 1) return;
-    console.log(RegisterData);
     setUser(0);       // correct input
-    console.log(RegisterData);
-    fetch(`http://localhost:8006/register`, {
+    fetch(`http://localhost:8007/register`, {
       method: 'POST',
       crossDomain: true,
       body: JSON.stringify(RegisterData),
@@ -88,9 +98,8 @@ const Form1 = (props) => {
   const handleLogin = (e) => {
     e.preventDefault();
     if(LoginDisabled === 1) return;
-    console.log(loginData);
-
-    fetch(`http://localhost:8006/login`, {
+    
+    fetch(`http://localhost:8007/login`, {
       method: 'POST',
       crossDomain: true,
       body: JSON.stringify(loginData),
@@ -102,8 +111,8 @@ const Form1 = (props) => {
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data);
-
+      
+      console.log('loginForm1',data);
       if(data.status === "Login successful!"){
         const userdata = data.user;
         localStorage.setItem("username", JSON.stringify(loginData.username));

@@ -2,18 +2,23 @@
 
 
 
-<!-- 
+
 ### FIX BUGS/Submission format
-- handle unique username
+- unique username  
 - profile page in backend
 - implement a loader if unsure about login -->
+- status codes to res.json
+- empty followers/following
 
-<!-- - deployed link in text field. -->
+- deployed link in text field.
 
 ## Claims
 - **After Login user is Redirected to Home Page Not Profile Page**
-- All fields are required in registration - Empty fields are not allowed
-- Toggle between Followers/Following - only one of two will be displayed
+- All fields are required in registration/login - Empty fields are not allowed
+- username is used to identify users in 'Followers/Following'
+- both Followers/Following won't be shown at once - only one of two will be displayed
+<!-- - Toggle between Followers/Following - only one of two will be displayed -->
+
 
 
 

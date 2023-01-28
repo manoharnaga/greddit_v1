@@ -21,7 +21,7 @@ const app = express();
 mongoose
   .connect(process.env.DATABASE,{
       useNewUrlParser: true,
-      useCreateIndex: true,
+      // useCreateIndex: true,
       useUnifiedTopology: true
    })
   .then(() => console.log('DB Connected'));
@@ -54,23 +54,26 @@ app.use(cors());
 
 
 
-app.post('/register', (req, res) => {
+app.post('/register',async (req, res) => {
   console.log(req.body);
   const {fname, lname, username, emailid, age, phno, password} = req.body;
   // console.log(fname,lname,username,emailid,age,phno,password);
-  isRequired = (fname && lname && username && emailid && age && phno && password);
+  isRequired = ((fname.length>0) && (lname.length>0) && (username.length>0) && (emailid.length>0) && (age.length>0) && (phno.length>0) && (password.length>0));
 
-  if(!isRequired){
+  // check if empty fields
+  if(!isRequired){  
     return res.json({status: "All Fields are required!!"});
   }
   try {
-    const oldUser = db.findOne({ username });
+    // const oldUser = await db.findOne({ username });
     // if(oldUser){
     //   res.send({status:"Username already exists!!"});
     // }
     // else{
       const newData = new db(req.body);
-      newData.save().then(data => res.json(data));
+      await newData.save()
+      .then(data => res.json(data))
+      .catch(error => console.error('Error:', error));
     // }
   } catch (error) {
     res.send({status: "Error submitting!"});
@@ -81,8 +84,10 @@ app.post('/register', (req, res) => {
 app.post('/login',async (req,res) => {
   const {username , password} = req.body;
   const user = await db.findOne({username,password});
+
+  // check if user exists -- empty fields are also handled
   if(!user){
-    return res.json({status:"User Doesn't Exist!"});
+    return res.json({status:"User Doesn't Exist!",username,password});
   }
   //bcrypt + jwt(token)
   if(res.status(201)){
@@ -93,9 +98,41 @@ app.post('/login',async (req,res) => {
   }
 });
 
+app.put("/followers", async (req, res) => {
+    const { username,followerUsername,flagFollow } = req.body;
+    const user = await db.findOne({username});
+    const followUser = await db.findOne({followerUsername});
+    if (!user || !followUser) {
+      return res.status(404).json({status:"User Doesn't Exist!",username,password});
+    }
+    try {
+      if(flagFollow === 1){
+        // remove followUser from followers[] of user - higher
+        // remove User from following[] of followUser - lower
+        user.followers = user.followers.filter((followers) => {return (followers.username !== followerUsername);});
+        followUser.following = followUser.following.filter((following) => {return (following.username !== username);});
+      }
+      else if(flagFollow === 2){
+        // remove followUser from following[] of user - lower
+        // remove User from followers[] of followUser - higher
+        user.following = user.following.filter((following) => {return (following.username !== username);});
+        followUser.followers = followUser.followers.filter((followers) => {return (followers.username !== followerUsername);});
+      }
+      
+      await user.save()
+      .then(data => res.json(data))
+      .catch(error => console.error('Error:', error));
+      await followUser.save()
+      .then(data => res.json(data))
+      .catch(error => console.error('Error:', error));
+
+    } catch (error) {
+      res.status(500).send({status: "Error updating followers list!"});
+    }
+});
 
 
-const port = process.env.PORT || 8006;
+const port = process.env.PORT || 8007;
 app.listen(port, () => {
   console.log(`Server is running on ${port}`)
 });

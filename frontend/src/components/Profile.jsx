@@ -6,43 +6,39 @@ const Profile = (props) => {
         Follower: "none",
         Following: "none"
     });
-
-    const [followerList,setFollowers] = useState([
-        { id: 1, username: 'manohar_21' },
-        { id: 2, username: 'chromastone' },
-        { id: 3, username: 'john_doe' },
-      ]
-    );
-
-    const [followingList,setFollowing] = useState([
-        { id: 1, username: 'avatar_aang' },
-        { id: 2, username: 'teen_titans' },
-        { id: 3, username: 'shinchan' },
-      ]
-    );
-    console.log(props.Loginval);
+    
     if(props.Loginval === "false"){
         return <Navigate to="/login" />;
     }
     
     
-    const removeFollower = (id) => {
-        setFollowers(followerList.filter(
-            (follower) => {return (follower.id !== id);}));
+    const removeFollow = (username,followerUsername,flagFollow) => {
+        fetch(`http://localhost:8007/followers`, {
+        method: 'PUT',
+        crossDomain: true,
+        body: JSON.stringify({username:username,followerUsername:followerUsername,flagFollow:flagFollow}),
+        headers: {
+            'Content-Type': 'application/json',
+            Accept:"application/json",
+            "Access-Control-Allow-Origin": "*",
         }
-        
-    const removeFollowing = (id) => {
-        setFollowing(followingList.filter(
-            (following) => {return (following.id !== id);}));
-        }
-        
-    console.log("Helo");
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data.data);
+            if(data.status === "Followers list updated successfully!"){
+                const userdata = data.data;
+                props.setUserData(userdata);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    
     return (
         <div>
             <h1>Helo @{props.userData.username}</h1>
             <table>
                 <tbody>
-                    {/* <th>My Profile</th> */}
                     <tr>
                         <td>First Name: </td>
                         <td>{props.userData.fname}</td>
@@ -69,10 +65,10 @@ const Profile = (props) => {
                     </tr>
                     <tr>
                         <td>
-                            <button className="btn btn-lg btn-info" onClick={() => {setDisplay({Follower:"",Following:"none"})}}>Followers {followerList.length}</button>
+                            <button className="btn btn-lg btn-info" onClick={() => {setDisplay({Follower:"",Following:"none"})}}>Followers {props.userData.followers?.length}</button>
                         </td>
                         <td>
-                            <button className="btn btn-lg btn-info" onClick={() => {setDisplay({Follower:"none",Following:""})}}>Following {followingList.length}</button>
+                            <button className="btn btn-lg btn-info" onClick={() => {setDisplay({Follower:"none",Following:""})}}>Following {props.userData.following?.length}</button>
                         </td>
                     </tr>
                 </tbody>
@@ -81,26 +77,42 @@ const Profile = (props) => {
 
             <table style={{display:display.Follower}}>
                 <tbody>
-                    {followerList.map((follower) => (
+                    {props.userData.followers?.map((follower) => (
                         <tr key={follower.id}>
                             <td>{follower.username}</td>
                             <td>
-                            <button onClick={() => { return removeFollower(follower.id);}} className="btn btn-lg btn-secondary">Remove</button>
+                                <button onClick={() => {removeFollow(props.userData.username,follower.username,1);}} className="btn btn-lg btn-secondary">Remove</button>
                             </td>
                         </tr>
-                    ))}
+                        ))}
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td>
+                            <button className="btn btn-lg btn-secondary" onClick={() => {setDisplay({Follower:"none",Following:"none"})}}>close</button>
+                        </td>
+                    </tr>
+                </tfoot>
             </table>
+
             <table style={{display:display.Following}}>
                 <tbody>
-                    {followingList.map((following) => (
+                    {props.userData.following?.map((following) => (
                         <tr key={following.id}>
                             <td>{following.username}</td>
                             <td>
-                            <button onClick={() => { return removeFollowing(following.id);}} className="btn btn-lg btn-secondary">Unfollow</button>
+                            <button onClick={() => {
+                                removeFollow(props.userData.username,following.username,2);
+                            }} 
+                                className="btn btn-lg btn-secondary">Unfollow</button>
                             </td>
                         </tr>
                     ))}
+                    <tr>
+                        <td>
+                            <button className="btn btn-lg btn-secondary" onClick={() => {setDisplay({Follower:"none",Following:"none"})}}>close</button>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 

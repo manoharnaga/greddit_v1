@@ -2,6 +2,8 @@ import { Navigate } from "react-router-dom";
 
 const Home = (props) => {
     if(props.Loginval === "false"){
+        // localStorage.setItem("username", JSON.stringify("none"));
+        // localStorage.setItem("password", JSON.stringify("none"));
         return <Navigate to="/login" />;
     }
     return (
