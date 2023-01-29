@@ -100,10 +100,10 @@ app.post('/login',async (req,res) => {
 
 app.put("/followers", async (req, res) => {
     const { username,followerUsername,flagFollow } = req.body;
-    const user = await db.findOne({username});
-    const followUser = await db.findOne({followerUsername});
+    const user = await db.findOne({username:username});
+    const followUser = await db.findOne({username:followerUsername});
     if (!user || !followUser) {
-      return res.status(404).json({status:"User Doesn't Exist!",username,password});
+      return res.json({status:"User Doesn't Exist!",username});
     }
     try {
       if(flagFollow === 1){
@@ -115,15 +115,16 @@ app.put("/followers", async (req, res) => {
       else if(flagFollow === 2){
         // remove followUser from following[] of user - lower
         // remove User from followers[] of followUser - higher
-        user.following = user.following.filter((following) => {return (following.username !== username);});
-        followUser.followers = followUser.followers.filter((followers) => {return (followers.username !== followerUsername);});
+        user.following = user.following.filter((following) => {return (following.username !== followerUsername);});
+        followUser.followers = followUser.followers.filter((followers) => {return (followers.username !== username);});
       }
-      
+
+      let response = {};
       await user.save()
-      .then(data => res.json(data))
+      .then(data => response=data)
       .catch(error => console.error('Error:', error));
       await followUser.save()
-      .then(data => res.json(data))
+      .then(data => res.json({status:"both recieved",response,data}))
       .catch(error => console.error('Error:', error));
 
     } catch (error) {
@@ -132,7 +133,7 @@ app.put("/followers", async (req, res) => {
 });
 
 
-const port = process.env.PORT || 8007;
+const port = process.env.PORT || 8005;
 app.listen(port, () => {
   console.log(`Server is running on ${port}`)
 });

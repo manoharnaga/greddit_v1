@@ -3,7 +3,7 @@ import { useLocation,Link, Route,Routes } from "react-router-dom";
 import Form1 from "./Form1";
 import Home from './Home';
 import Profile from "./Profile";
-import MySubGreddits from "./MySubgreddiits";
+import MySubGreddits from "./MySubgreddits";
 
 
 const App = () => {
@@ -35,7 +35,7 @@ const App = () => {
     const userObj = () => {
       console.log('Page loaded/refreshed');
       console.log("logindata from localStorage",loginData);
-      fetch(`http://localhost:8007/login`, {
+      fetch(`http://localhost:8005/login`, {
         method: 'POST',
         crossDomain: true,
         body: JSON.stringify(loginData),

@@ -11,9 +11,8 @@ const Profile = (props) => {
         return <Navigate to="/login" />;
     }
     
-    
     const removeFollow = (username,followerUsername,flagFollow) => {
-        fetch(`http://localhost:8007/followers`, {
+        fetch(`http://localhost:8005/followers`, {
         method: 'PUT',
         crossDomain: true,
         body: JSON.stringify({username:username,followerUsername:followerUsername,flagFollow:flagFollow}),
@@ -25,9 +24,9 @@ const Profile = (props) => {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data.data);
-            if(data.status === "Followers list updated successfully!"){
-                const userdata = data.data;
+            if(data.status === "both recieved"){
+                console.log("both recieved",data);
+                const userdata = data.response;
                 props.setUserData(userdata);
             }
         })

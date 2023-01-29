@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-function SubGreddiitNavbar() {
+function SubGredditNavbar() {
   return (
     <div>
       <Link to="/">Home</Link>
@@ -10,4 +10,4 @@ function SubGreddiitNavbar() {
   );
 }
 
-export default SubGreddiitNavbar;
+export default SubGredditNavbar;
