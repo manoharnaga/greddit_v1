@@ -4,11 +4,14 @@
 
 
 ### FIX BUGS/Submission format
+- navbar
 - unique username  
-- profile page in backend
+- add edit profile option in profile page
 - implement a loader if unsure about login -->
 - status codes to res.json
 - empty followers/following
+- print comma separated banned keyword
+
 
 - deployed link in text field.
 

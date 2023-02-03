@@ -12,7 +12,6 @@ let subGredditSchema = new Schema(
     },
     description: {
       type: String,
-      required: true,
     },
     users: [],
     tags: [],

@@ -15,13 +15,16 @@ mongoose.connect(process.env.DATABASE, () => {
 //import routes
 const authRoutes = require('./routes/auth');
 const db = require('./models/User');
+const Subgreddit = require('./models/Subgreddit');
+const { response } = require('express');
+
 //app
 const app = express();
 // db
 mongoose
   .connect(process.env.DATABASE,{
       useNewUrlParser: true,
-      // useCreateIndex: true,
+      useCreateIndex: true,
       useUnifiedTopology: true
    })
   .then(() => console.log('DB Connected'));
@@ -55,9 +58,7 @@ app.use(cors());
 
 
 app.post('/register',async (req, res) => {
-  console.log(req.body);
   const {fname, lname, username, emailid, age, phno, password} = req.body;
-  // console.log(fname,lname,username,emailid,age,phno,password);
   isRequired = ((fname.length>0) && (lname.length>0) && (username.length>0) && (emailid.length>0) && (age.length>0) && (phno.length>0) && (password.length>0));
 
   // check if empty fields
@@ -76,7 +77,7 @@ app.post('/register',async (req, res) => {
       .catch(error => console.error('Error:', error));
     // }
   } catch (error) {
-    res.send({status: "Error submitting!"});
+    res.send({status: "Error submitting new UserRegistration!"});
   }
 });
 
@@ -84,7 +85,6 @@ app.post('/register',async (req, res) => {
 app.post('/login',async (req,res) => {
   const {username , password} = req.body;
   const user = await db.findOne({username,password});
-
   // check if user exists -- empty fields are also handled
   if(!user){
     return res.json({status:"User Doesn't Exist!",username,password});
@@ -119,18 +119,60 @@ app.put("/followers", async (req, res) => {
         followUser.followers = followUser.followers.filter((followers) => {return (followers.username !== username);});
       }
 
-      let response = {};
+      let firstResponse = {};
       await user.save()
-      .then(data => response=data)
+      .then(data => firstResponse=data)
       .catch(error => console.error('Error:', error));
       await followUser.save()
-      .then(data => res.json({status:"both recieved",response,data}))
+      .then(data => res.json({status:"both recieved",firstResponse,data}))
       .catch(error => console.error('Error:', error));
 
     } catch (error) {
       res.status(500).send({status: "Error updating followers list!"});
     }
 });
+
+
+
+
+// Subgreddit
+app.post('/mysubgredditadd',async (req, res) => {
+  console.log(req.body);
+  const {moderator,name} = req.body;
+  isRequired = (name.length>0) && (moderator.length>0);
+
+  // check if empty fields
+  if(!isRequired){  
+    return res.json({status: "Name,Moderator are required!!"});
+  }
+  try {
+      const newData = new Subgreddit(req.body);
+      await newData.save()
+      .then(data => res.json(data))
+      .catch(error => console.error('Error:', error));
+  } catch (error) {
+    res.send({status: "Error submitting Subgreddit!"});
+  }
+});
+
+
+app.post('/mysubgreddits',async (req,res) => {
+  const {moderator} = req.body;
+  const MySubgreddits = await Subgreddit.find({moderator});
+  // check if any Subgreddit exists -- empty fields are also handled
+  if(!MySubgreddits){
+    return res.json({status:"No Subgreddits found!",moderator});
+  }
+  //bcrypt + jwt(token)
+  if(res.status(201)){
+    return res.json({status: "mysubgreddits sent",MySubgreddits});
+  }
+  else{
+    return res.json({status: "Error: Login Unsuccessful!"});
+  }
+});
+
+
 
 
 const port = process.env.PORT || 8005;
