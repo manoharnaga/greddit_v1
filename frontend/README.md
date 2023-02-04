@@ -9,9 +9,11 @@
 - add edit profile option in profile page
 - implement a loader if unsure about login -->
 - status codes to res.json
+- handle async & await
 - print comma separated banned keyword
+- fix tags submitting on pressing enter in Mysubgreddits
 
-
+- check line 32 in MySubgreddits
 ### DONE
 - deployed link in text field.
 - empty followers/following
@@ -22,6 +24,7 @@
 - All fields are required in registration/login - Empty fields are not allowed
 - username is used to identify users in 'Followers/Following'
 - both Followers/Following won't be shown at once - only one of two will be displayed
+- SubGredditMod -- Moderator of MySubgredditsPage
 <!-- - Toggle between Followers/Following - only one of two will be displayed -->
 
 

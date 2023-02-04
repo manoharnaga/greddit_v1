@@ -14,6 +14,8 @@ let subGredditSchema = new Schema(
       type: String,
     },
     users: [],
+    requests: [],
+    blocked: [],
     tags: [],
     bannedKeywords: [],
   },

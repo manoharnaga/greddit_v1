@@ -57,11 +57,11 @@ const Form1 = (props) => {
     setRegisterDisabled(!(checkRegister && (e.target.value.length > 0)));
   }
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     if(RegisterDisabled === 1) return;
     setUser(0);       // correct input
-    fetch(`http://localhost:5000/auth/register`, {
+    await fetch(`http://localhost:5000/auth/register`, {
       method: 'POST',
       crossDomain: true,
       body: JSON.stringify(RegisterData),
@@ -95,11 +95,11 @@ const Form1 = (props) => {
   }
 
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if(LoginDisabled === 1) return;
     
-    fetch(`http://localhost:5000/auth/login`, {
+    await fetch(`http://localhost:5000/auth/login`, {
       method: 'POST',
       crossDomain: true,
       body: JSON.stringify(loginData),

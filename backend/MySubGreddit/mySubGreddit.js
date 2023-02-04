@@ -1,25 +1,9 @@
 const express = require("express");
 const router = express.Router();
-
 const Subgreddit = require("../models/Subgreddit");
 
-router.post("/mysubgredditdata", async (req, res) => {
-  const { moderator } = req.body;
-  const MySubgreddits = await Subgreddit.find({ moderator });
-  // check if any Subgreddit exists -- empty fields are also handled
-  if (!MySubgreddits) {
-    return res.json({ status: "No Subgreddits found!", moderator });
-  }
-  //bcrypt + jwt(token)
-  if (res.status(201)) {
-    return res.json({ status: "mysubgreddits sent", MySubgreddits });
-  } else {
-    return res.json({ status: "Error: Can't Send Subbgreddits" });
-  }
-});
 
-
-router.post("/mysubgredditadd", async (req, res) => {
+router.post("/add", async (req, res) => {
   console.log(req.body);
   const { moderator, name } = req.body;
   isRequired = name.length > 0 && moderator.length > 0;
@@ -38,6 +22,33 @@ router.post("/mysubgredditadd", async (req, res) => {
     res.send({ status: "Error submitting Subgreddit!" });
   }
 });
+
+
+
+router.post("/data", async (req, res) => {
+  const { moderator } = req.body;
+  const MySubgreddits = await Subgreddit.find({ moderator });
+  // check if any Subgreddit exists -- empty fields are also handled
+  if (!MySubgreddits) {
+    return res.json({ status: "No Subgreddits found!", moderator });
+  }
+  //bcrypt + jwt(token)
+  if (res.status(201)) {
+    return res.json({ status: "mysubgreddits sent", MySubgreddits });
+  } else {
+    return res.json({ status: "Error: Can't Send Subbgreddits" });
+  }
+});
+
+
+
+router.post("/delete", async (req, res) => {
+  console.log(req.body);
+  await Subgreddit.deleteOne({ _id: req._id })
+  .then((data) => res.json({ status: "MySubgreddit Deleted Successfully!", data}))
+  .catch((error) => console.error("Unable to Delete MySubgreddit!", error));
+});
+
 
 
 module.exports = router;

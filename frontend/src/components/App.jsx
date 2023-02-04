@@ -4,7 +4,7 @@ import Form1 from "./Form1";
 import Home from './Home';
 import Profile from "./Profile";
 import MySubGreddits from "./MySubgreddits";
-// import EditProfile from "./EditProfile";
+import SubGredditMod from "./SubgredditMod";
 
 
 const App = () => {
@@ -31,10 +31,10 @@ const App = () => {
       return {username:usernameSaved || "",password: passwordSaved || ""};
     }
     let loginData = loginDatafunc();
-    const userObj = () => {
+    const userObj = async () => {
       console.log('Page loaded/refreshed');
       console.log("logindata from localStorage",loginData);
-      fetch(`http://localhost:5000/auth/login`, {
+      await fetch(`http://localhost:5000/auth/login`, {
         method: 'POST',
         crossDomain: true,
         body: JSON.stringify(loginData),
@@ -84,8 +84,8 @@ const App = () => {
           <Route exact path="/" element={<Home Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
           <Route exact path="/login" element={<Form1 Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
           <Route exact path="/profile" element={<Profile Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
-          {/* <Route exact path="/editprofile" element={<EditProfile />} />  */}
-          <Route exact path="/mysubgreddits" element={<MySubGreddits Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
+          <Route exact path="/mysubgreddits" element={<MySubGreddits Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData} />} />
+          <Route path="/mysubgreddits/:id" element={<SubGredditMod/>} /> 
         </Routes>
       </div>
   );

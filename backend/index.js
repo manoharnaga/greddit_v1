@@ -18,6 +18,7 @@ mongoose.connect(process.env.DATABASE, () => {
 const authRoutes = require("./Auth/auth");
 const profileRoutes = require("./Profile/editprofile");
 const mySubgredditRoutes = require("./MySubGreddit/mySubGreddit");
+const mySubgredditMODRoutes = require("./SubGredditMod/SubGredditMod");
 
 //app
 const app = express();
@@ -55,7 +56,7 @@ app.use(cors());
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/mysubgreddits", mySubgredditRoutes);
-
+app.use("/mysubgredditsmod",mySubgredditMODRoutes);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

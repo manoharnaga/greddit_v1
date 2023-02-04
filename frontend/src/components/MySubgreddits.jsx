@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation , useNavigate} from "react-router-dom";
 
 const MySubGreddits = (props) => {
   const [tags, setTags] = useState([]);
@@ -9,18 +9,22 @@ const MySubGreddits = (props) => {
     moderator: "",
     name: "",
     description: "",
-    users: [],
+    users: ["u1","u2","u3","u4","u5"],
+    requests: ["r1","r2","r3","r4","r5"],
+    blocked: ["b1","b2","b3"],
     tags: [],
     bannedKeywords: [],
   });
-  const [MySubGreddits,setMySubGreddits] = useState([]);
+
+  const [MySubGreddits,setMySubGreddits] = useState();
+  let navigate = useNavigate();
 
   let location = useLocation();
   useEffect(() => {
     // function to be called on page load/refresh
     const SubgredditObj = () => {
       console.log("Page loaded/refreshed");
-      fetch(`http://localhost:5000/mysubgreddits/mysubgredditdata`, {
+      fetch(`http://localhost:5000/mysubgreddits/data`, {
         method: "POST",
         crossDomain: true,
         body: JSON.stringify({
@@ -106,26 +110,26 @@ const MySubGreddits = (props) => {
   };
 
   const handleSubGreddit = (e) => {
-    if (e.key === 'Enter'){
-      e.preventDefault();
-      console.log("Enter is Pressed!");
-    }
-    else{
-      e.preventDefault();
-    }
+    // if (e.key === 'Enter'){
+    //   e.preventDefault();
+    //   console.log("Enter is Pressed!");
+    // }
+
+    e.preventDefault();
     if (SubGredditDisabled) return;
 
-    setSubGredditData({
-      ...SubGredditData,
-      moderator: props.userData.username,
-      tags: tags,
-      bannedKeywords: bannedKeywords,
-    });
-
-    fetch(`http://localhost:5000/mysubgreddits/mysubgredditadd`, {
+    // setSubGredditData();
+    console.log(props.userData.username);
+    
+    fetch(`http://localhost:5000/mysubgreddits/add`, {
       method: "POST",
       crossDomain: true,
-      body: JSON.stringify(SubGredditData),
+      body: JSON.stringify({
+        ...SubGredditData,
+        moderator: props.userData.username,
+        tags: tags,
+        bannedKeywords: bannedKeywords,
+      }),
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -138,6 +142,32 @@ const MySubGreddits = (props) => {
         // window.location.reload(false);
       })
       .catch((error) => console.error("Error:", error));
+  };
+
+
+  const DeleteSubGreddit = (_id) => {
+    fetch(`http://localhost:5000/mysubgreddits/delete`, {
+      method: "DELETE",
+      // crossDomain: true,
+      body: JSON.stringify(_id),
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        // "Access-Control-Allow-Origin": "*",
+      },
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      // window.location.reload(false);
+    })
+    .catch((error) => console.error("Error:", error));
+  };
+
+
+  const OpenSubGreddit  = (_id) => {
+    console.log("Mysubgreddit in New Page!",_id);
+    navigate(`/mysubgreddits/${_id}`,{state:{id:_id}});
   };
 
   return (
@@ -221,8 +251,8 @@ const MySubGreddits = (props) => {
               <td>{subgreddit.users.length}</td>
               <td>{subgreddit.name}</td>
               <td>{subgreddit.description}</td>
-              <td><input className="btn btn-lg btn-info" type="button" name="deleteSubgreddit" value="Delete"/></td>
-              <td><input className="btn btn-lg btn-info" type="button" name="openSubgreddit" value="Open"/></td>
+              <td><input className="btn btn-lg btn-info" type="button" onClick={() => DeleteSubGreddit(subgreddit._id)} name="deleteSubgreddit" value="Delete"/></td>
+              <td><input className="btn btn-lg btn-info" type="button" onClick={() => OpenSubGreddit(subgreddit._id) } name="openSubgreddit" value="Open"/></td>
               {/* print comma separated banned keyword */}
             </tr>
           ))}

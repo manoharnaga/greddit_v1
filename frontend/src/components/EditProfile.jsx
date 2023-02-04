@@ -47,8 +47,8 @@ const EditProfile = (props) => {
         setEditProfileDisabled(!(checkEditProfile && (e.target.value.length > 0)));
     }
 
-    const handleEditProfile = () => {
-        fetch(`http://localhost:5000/profile/editprofile`, {
+    const handleEditProfile = async () => {
+        await fetch(`http://localhost:5000/profile/editprofile`, {
         method: 'PUT',
         crossDomain: true,
         body: JSON.stringify(ProfileData),
