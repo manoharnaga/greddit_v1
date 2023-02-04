@@ -9,11 +9,13 @@
 - add edit profile option in profile page
 - implement a loader if unsure about login -->
 - status codes to res.json
-- empty followers/following
 - print comma separated banned keyword
 
 
+### DONE
 - deployed link in text field.
+- empty followers/following
+
 
 ## Claims
 - **After Login user is Redirected to Home Page Not Profile Page**

@@ -6,13 +6,14 @@ const Profile = (props) => {
         Follower: "none",
         Following: "none"
     });
-    
+    const [EditProfile,setEditProfile] = useState("");
+
     if(props.Loginval === "false"){
         return <Navigate to="/login" />;
     }
     
     const removeFollow = (username,followerUsername,flagFollow) => {
-        fetch(`http://localhost:8005/followers`, {
+        fetch(`http://localhost:5000/profile/followers`, {
         method: 'PUT',
         crossDomain: true,
         body: JSON.stringify({username:username,followerUsername:followerUsername,flagFollow:flagFollow}),
@@ -26,14 +27,19 @@ const Profile = (props) => {
         .then(data => {
             if(data.status === "both recieved"){
                 console.log("both recieved",data);
-                const userdata = data.response;
+                const userdata = data.firstResponse;
                 props.setUserData(userdata);
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
-    
+
     return (
+        (EditProfile === "openEditProfilePage") ?
+        <Navigate to="/editprofile"/>
+        :
         <div>
             <h1>Helo @{props.userData.username}</h1>
             <table>
@@ -61,6 +67,20 @@ const Profile = (props) => {
                     <tr>
                         <td>Phone No: </td>
                         <td>{props.userData.phno}</td>
+                    </tr>
+                    <tr colSpan="2">
+                        <td>
+                            <button className="btn btn-lg btn-info" onClick={
+                                () => {
+                                    setEditProfile("openEditProfilePage");
+                                }
+                                }>Edit Profile</button>
+                        </td>
+                    </tr>
+                    <tr colSpan="2">
+                        <td>
+                            {EditProfile}   
+                        </td>
                     </tr>
                     <tr>
                         <td>

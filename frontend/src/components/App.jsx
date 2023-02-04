@@ -4,6 +4,7 @@ import Form1 from "./Form1";
 import Home from './Home';
 import Profile from "./Profile";
 import MySubGreddits from "./MySubgreddits";
+// import EditProfile from "./EditProfile";
 
 
 const App = () => {
@@ -13,9 +14,8 @@ const App = () => {
       return initialValue || "";
     }
   );
-
   const [userData, setUserData] = useState(0);
-  
+
   useEffect(() => {
     // storing input name
     localStorage.setItem("login-key", JSON.stringify(isLoggedin));
@@ -23,7 +23,6 @@ const App = () => {
   
   
   let location = useLocation();
-  // console.log(location);
   useEffect(() => {
     // function to be called on page load/refresh
     const loginDatafunc = () => {
@@ -35,7 +34,7 @@ const App = () => {
     const userObj = () => {
       console.log('Page loaded/refreshed');
       console.log("logindata from localStorage",loginData);
-      fetch(`http://localhost:8005/login`, {
+      fetch(`http://localhost:5000/auth/login`, {
         method: 'POST',
         crossDomain: true,
         body: JSON.stringify(loginData),
@@ -57,12 +56,16 @@ const App = () => {
           console.log("Unable to fetch User Data! - App.jsx");
         }
       })
-      .catch(error => console.error('Error:', error));
+      .catch(error => {
+        console.error('Error:', error);
+      });
     }
     if(JSON.parse(localStorage.getItem("login-key")) === "true"){
       userObj();
     }
   }, [location.pathname]);
+
+
 
 
   return (
@@ -73,6 +76,7 @@ const App = () => {
             <li><Link to="/">Home</Link></li>
             <li><Link to="/login">Login</Link></li>
             <li><Link to="/profile">Profile</Link></li>
+            {/* <li><Link to="/editprofile">EditProfile</Link></li> */}
             <li><Link to="/mysubgreddits">My Sub Greddiits</Link></li>
           </ul>
         </nav>
@@ -80,6 +84,7 @@ const App = () => {
           <Route exact path="/" element={<Home Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
           <Route exact path="/login" element={<Form1 Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
           <Route exact path="/profile" element={<Profile Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
+          {/* <Route exact path="/editprofile" element={<EditProfile />} />  */}
           <Route exact path="/mysubgreddits" element={<MySubGreddits Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
         </Routes>
       </div>

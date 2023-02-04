@@ -61,7 +61,7 @@ const Form1 = (props) => {
     e.preventDefault();
     if(RegisterDisabled === 1) return;
     setUser(0);       // correct input
-    fetch(`http://localhost:8005/register`, {
+    fetch(`http://localhost:5000/auth/register`, {
       method: 'POST',
       crossDomain: true,
       body: JSON.stringify(RegisterData),
@@ -99,7 +99,7 @@ const Form1 = (props) => {
     e.preventDefault();
     if(LoginDisabled === 1) return;
     
-    fetch(`http://localhost:8005/login`, {
+    fetch(`http://localhost:5000/auth/login`, {
       method: 'POST',
       crossDomain: true,
       body: JSON.stringify(loginData),
@@ -129,7 +129,7 @@ const Form1 = (props) => {
     .catch(error => console.error('Error:', error));
   }
 
-
+  
   return (
     (newUser) ? 
     <form onSubmit={handleRegister}>

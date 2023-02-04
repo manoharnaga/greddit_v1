@@ -20,7 +20,7 @@ const MySubGreddits = (props) => {
     // function to be called on page load/refresh
     const SubgredditObj = () => {
       console.log("Page loaded/refreshed");
-      fetch(`http://localhost:8005/mysubgreddits`, {
+      fetch(`http://localhost:5000/mysubgreddits/mysubgredditdata`, {
         method: "POST",
         crossDomain: true,
         body: JSON.stringify({
@@ -122,7 +122,7 @@ const MySubGreddits = (props) => {
       bannedKeywords: bannedKeywords,
     });
 
-    fetch(`http://localhost:8005/mysubgredditadd`, {
+    fetch(`http://localhost:5000/mysubgreddits/mysubgredditadd`, {
       method: "POST",
       crossDomain: true,
       body: JSON.stringify(SubGredditData),
