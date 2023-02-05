@@ -112,7 +112,7 @@ const Form1 = (props) => {
     .then(res => res.json())
     .then(data => {
       
-      console.log('loginForm1',data);
+      console.log('login',data);
       if(data.status === "Login successful!"){
         const userdata = data.user;
         localStorage.setItem("username", JSON.stringify(loginData.username));

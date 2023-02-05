@@ -6,6 +6,8 @@ const Subgreddit = require("../models/Subgreddit");
 router.post("/data", async (req, res) => {
   const { id } = req.body;
   const MySubgreddits = await Subgreddit.findOne({ _id: id });
+  // res.header("Access-Control-Allow-Origin", "*");
+  // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   // check if any Subgreddit exists -- empty fields are also handled
   if (!MySubgreddits) {
     return res.json({ status: "No Subgreddits found!", moderator });
@@ -15,7 +17,7 @@ router.post("/data", async (req, res) => {
   if (res.status(201)) {
     return res.json({
       status: "modsubgredditUsers sent",
-      SubgredditData: MySubgreddits,
+      MySubgreddits,
     });
   } else {
     return res.json({ status: "Error: Can't Send ModSubbgredditUsers" });

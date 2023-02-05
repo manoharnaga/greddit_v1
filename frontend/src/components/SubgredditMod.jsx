@@ -1,13 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Tab, Tabs, Navbar } from 'react-bootstrap';
 
-
+// load page on refresh not handled!!!!
 
 const SubGredditMod = () => {
-    // const [Users, setUsers] = useState([]);
-    // const [Blocked, setBlocked] = useState([]);
-
+    
     const [SubGredditData, setSubGredditData] = useState({
       moderator: "",
       name: "",
@@ -18,36 +16,43 @@ const SubGredditMod = () => {
       tags: [],
       bannedKeywords: [],
     });
+
     const [key, setKey] = useState("Users");
     let location = useLocation();
-    
-    const getSubGredditData = async () => {
-      await fetch(`http://localhost:5000/mysubgredditsmod/data`, {
-        method: "POST",
-        crossDomain: true,
-        body: JSON.stringify({id: location.state.id}),
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          if (data.status === "modsubgredditUsers sent") {
-            const MySubgredditData = data.SubgredditData;
-            setSubGredditData(MySubgredditData);
-          } else {
-            console.log(
-              "Unable to fetch ModSubgreddit Users! - SubgredditMod"
-            );
+    useEffect(() => {
+      const _id = localStorage.getItem('modsubgredditId');
+      const getSubGredditData = async () => {
+        console.log("Page Loaded/Refreshed");
+        await fetch(`http://localhost:5000/mysubgredditsmod/data`, {
+          method: 'POST',
+          crossDomain: true,
+          body: JSON.stringify({id:_id}),
+          headers: {
+            'Content-Type': 'application/json',
+            Accept:"application/json",
+            "Access-Control-Allow-Origin": "*",
           }
         })
-        .catch((error) => console.error("Error:", error));
-    };
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            if (data.status === "modsubgredditUsers sent") {
+              const MySubgredditData = data.MySubgreddits;
+              setSubGredditData(MySubgredditData);
+            } else {
+              console.log(
+                "Unable to fetch ModSubgreddit Users! - SubgredditMod"
+              );
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error)
+          });
+      };
+      getSubGredditData();
 
-
+    },[location.pathname]);
+    
     const handleRequest = async (username,flagRequest) => {
       await fetch(`http://localhost:5000/mysubgredditsmod/request`, {
         method: 'PUT',
@@ -78,10 +83,9 @@ const SubGredditMod = () => {
     const handleTabClick = (tabKey) => {
       setKey(tabKey);
       console.log("SubGredditData",SubGredditData);
-      if(tabKey === "Users"){
-        getSubGredditData();
-      }
-      // console.log(`Tab with key ${tabKey} was clicked!`);
+      // if(tabKey === "Users"){
+      //   // getSubGredditData();
+      // }
     };
     
     return (

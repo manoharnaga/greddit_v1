@@ -62,7 +62,7 @@ const EditProfile = (props) => {
         .then(data => {
             if(data.status === "profile edited"){
                 console.log("profile edited",data);
-                const userdata = data.response;
+                const userdata = data.data;
                 props.setUserData(userdata);
                 // setEditProfile("Profile Updated Successfully!");//green
             }

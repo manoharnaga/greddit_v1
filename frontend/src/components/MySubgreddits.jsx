@@ -167,6 +167,7 @@ const MySubGreddits = (props) => {
 
   const OpenSubGreddit  = (_id) => {
     console.log("Mysubgreddit in New Page!",_id);
+    localStorage.setItem('modsubgredditId', _id);
     navigate(`/mysubgreddits/${_id}`,{state:{id:_id}});
   };
 

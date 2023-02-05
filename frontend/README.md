@@ -12,6 +12,8 @@
 - handle async & await
 - print comma separated banned keyword
 - fix tags submitting on pressing enter in Mysubgreddits
+- load page on refresh not handled -- SubgredditMod
+- cleanup localstorage -- SubgredditMod,wherever used && see useEffect Cleanup
 
 - check line 32 in MySubgreddits
 ### DONE
