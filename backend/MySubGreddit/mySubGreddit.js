@@ -13,6 +13,7 @@ router.post("/add", async (req, res) => {
     return res.json({ status: "Name,Moderator are required!!" });
   }
   try {
+    req.body.joined.push(moderator);      // first joined is moderator
     const newData = new Subgreddit(req.body);
     await newData
       .save()
@@ -42,13 +43,12 @@ router.post("/data", async (req, res) => {
 
 
 
-router.post("/delete", async (req, res) => {
-  console.log(req.body);
-  await Subgreddit.deleteOne({ _id: req._id })
+router.delete("/delete/:id", async (req, res) => {
+  // console.log(req.body);
+  await Subgreddit.findByIdAndDelete(req.params.id)
   .then((data) => res.json({ status: "MySubgreddit Deleted Successfully!", data}))
   .catch((error) => console.error("Unable to Delete MySubgreddit!", error));
 });
-
 
 
 module.exports = router;

@@ -5,19 +5,17 @@ const Subgreddit = require("../models/Subgreddit");
 
 router.post("/data", async (req, res) => {
   const { id } = req.body;
-  const MySubgreddits = await Subgreddit.findOne({ _id: id });
-  // res.header("Access-Control-Allow-Origin", "*");
-  // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  const MySubgreddit = await Subgreddit.findOne({ _id: id });
   // check if any Subgreddit exists -- empty fields are also handled
-  if (!MySubgreddits) {
-    return res.json({ status: "No Subgreddits found!", moderator });
+  if (!MySubgreddit) {
+    return res.json({ status: "No Subgreddit found!", moderator });
   }
   //bcrypt + jwt(token)
 
   if (res.status(201)) {
     return res.json({
       status: "modsubgredditUsers sent",
-      MySubgreddits,
+      MySubgreddit,
     });
   } else {
     return res.json({ status: "Error: Can't Send ModSubbgredditUsers" });
@@ -32,11 +30,11 @@ router.put("/request", async (req, res) => {
     return res.json({ status: "No Subgreddits found!", moderator });
   }
   try {
-    MySubgredditMod.requests = MySubgredditMod.requests.filter((user) => {
+    MySubgredditMod.requested = MySubgredditMod.requested.filter((user) => {
       return user !== username;
     });
     if (flagRequest === 1) {
-      MySubgredditMod.users.push(username);
+      MySubgredditMod.joined.push(username);
     }
 
     await MySubgredditMod.save()

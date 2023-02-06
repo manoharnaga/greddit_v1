@@ -35,13 +35,13 @@ router.put("/followers", async (req, res) => {
     await user
       .save()
       .then((data) => (firstResponse = data))
-      .catch((error) => console.error("followers-Error:", error));
+      .catch((error) => console.error("Error:", error));
     await followUser
       .save()
       .then((data) =>
         res.json({ status: "both recieved", firstResponse, data })
       )
-      .catch((error) => console.error("followers-Error:", error));
+      .catch((error) => console.error("Error:", error));
   } catch (error) {
     res.status(500).send({ status: "Error updating followers list!" });
   }

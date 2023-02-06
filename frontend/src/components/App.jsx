@@ -1,11 +1,17 @@
 import { useState,useEffect } from "react";
 import { useLocation,Link, Route,Routes } from "react-router-dom";
+
 import Form1 from "./Form1";
 import Home from './Home';
 import Profile from "./Profile";
 import MySubGreddits from "./MySubgreddits";
 import SubGredditMod from "./SubgredditMod";
+import AkaSubGreddit from "./AkaSubgreddiit";
+import Post from "./Post";
 
+import * as React from 'react';
+import { Toolbar } from "@mui/material";
+import SavedPost from "./SavedPost";
 
 const App = () => {
   const [isLoggedin, setLogin] = useState(
@@ -34,7 +40,7 @@ const App = () => {
     const userObj = async () => {
       console.log('Page loaded/refreshed');
       console.log("logindata from localStorage",loginData);
-      await fetch(`http://localhost:5000/auth/login`, {
+      await fetch(`http://localhost:7000/auth/login`, {
         method: 'POST',
         crossDomain: true,
         body: JSON.stringify(loginData),
@@ -69,15 +75,22 @@ const App = () => {
 
 
   return (
-      <div className="container">
+      <div>
+        <React.Fragment>
+          <Home position="fixed">
+            <Toolbar>{/* content */}</Toolbar>
+          </Home>
+          <Toolbar />
+        </React.Fragment>
         {/* <h1>localStorage with React hooks</h1> */}
         <nav>
           <ul>
+            {/* <li><Link to="/editprofile">EditProfile</Link></li> */}
             <li><Link to="/">Home</Link></li>
             <li><Link to="/login">Login</Link></li>
             <li><Link to="/profile">Profile</Link></li>
-            {/* <li><Link to="/editprofile">EditProfile</Link></li> */}
             <li><Link to="/mysubgreddits">My Sub Greddiits</Link></li>
+            <li><Link to="/akasubgreddits">AkaSubGreddiits</Link></li>
           </ul>
         </nav>
         <Routes>
@@ -86,6 +99,9 @@ const App = () => {
           <Route exact path="/profile" element={<Profile Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
           <Route exact path="/mysubgreddits" element={<MySubGreddits Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData} />} />
           <Route path="/mysubgreddits/:id" element={<SubGredditMod/>} /> 
+          <Route exact path="/akasubgreddits" element={<AkaSubGreddit Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData} />} />
+          <Route exact path="/akasubgreddits/:id" element={<Post Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData} />} />
+          <Route exact path="/savedpost" element={<SavedPost Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData} />} />
         </Routes>
       </div>
   );

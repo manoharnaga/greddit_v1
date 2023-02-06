@@ -1,21 +1,36 @@
 import { useState, useEffect } from "react";
 import { Navigate, useLocation , useNavigate} from "react-router-dom";
 
+
+import * as React from 'react';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import PeopleIcon from '@mui/icons-material/People';
+
+
 const MySubGreddits = (props) => {
   const [tags, setTags] = useState([]);
   const [bannedKeywords, setBannedKeywords] = useState([]);
-  const [SubGredditDisabled, setSubGredditDisabled] = useState(1);
+  const [SubGredditDisabled, setSubGredditDisabled] = useState(true);
   const [SubGredditData, setSubGredditData] = useState({
     moderator: "",
     name: "",
     description: "",
-    users: ["u1","u2","u3","u4","u5"],
-    requests: ["r1","r2","r3","r4","r5"],
+    joined: ["u1","u2","u3","u4","u5"],
+    requested: ["r1","r2","r3","r4","r5"],
     blocked: ["b1","b2","b3"],
     tags: [],
     bannedKeywords: [],
+    post: []
   });
-
+  
   const [MySubGreddits,setMySubGreddits] = useState();
   let navigate = useNavigate();
 
@@ -24,7 +39,7 @@ const MySubGreddits = (props) => {
     // function to be called on page load/refresh
     const SubgredditObj = () => {
       console.log("Page loaded/refreshed");
-      fetch(`http://localhost:5000/mysubgreddits/data`, {
+      fetch(`http://localhost:7000/mysubgreddits/data`, {
         method: "POST",
         crossDomain: true,
         body: JSON.stringify({
@@ -110,18 +125,10 @@ const MySubGreddits = (props) => {
   };
 
   const handleSubGreddit = (e) => {
-    // if (e.key === 'Enter'){
-    //   e.preventDefault();
-    //   console.log("Enter is Pressed!");
-    // }
-
     e.preventDefault();
     if (SubGredditDisabled) return;
-
-    // setSubGredditData();
-    console.log(props.userData.username);
     
-    fetch(`http://localhost:5000/mysubgreddits/add`, {
+    fetch(`http://localhost:7000/mysubgreddits/add`, {
       method: "POST",
       crossDomain: true,
       body: JSON.stringify({
@@ -146,20 +153,20 @@ const MySubGreddits = (props) => {
 
 
   const DeleteSubGreddit = (_id) => {
-    fetch(`http://localhost:5000/mysubgreddits/delete`, {
+    fetch(`http://localhost:7000/mysubgreddits/delete/${_id}`, {
       method: "DELETE",
-      // crossDomain: true,
-      body: JSON.stringify(_id),
+      crossDomain: true,
+      // body: JSON.stringify({id:_id}),
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        // "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Origin": "*",
       },
     })
     .then((res) => res.json())
     .then((data) => {
       console.log(data);
-      // window.location.reload(false);
+      window.location.reload(false);
     })
     .catch((error) => console.error("Error:", error));
   };
@@ -171,27 +178,65 @@ const MySubGreddits = (props) => {
     navigate(`/mysubgreddits/${_id}`,{state:{id:_id}});
   };
 
+
+
+  const card = (name,description,postlength,joinedlength,_id,tags,bannedKeywords) => {
+    return (
+    <React.Fragment>
+      <CardContent>
+        <Typography variant="h4" component="div">
+          {name}
+        </Typography>
+        <Typography variant="body1">
+        {description}
+        </Typography>
+        {tags.map((tag,index) => (
+          <Typography key={index} variant="body2" display="inline">
+            #{tag} ,
+          </Typography>
+        ))}
+        {bannedKeywords.map((tag,index) => (
+          <Typography key={index} variant="body2" display="inline">
+            #{tag} ,
+          </Typography>
+        ))}
+      </CardContent>
+      <CardActions>
+        <IconButton aria-label="no. of posts">
+          <PostAddIcon color="primary"/>
+          <Typography variant="body2">
+            {postlength}
+          </Typography>
+        </IconButton>
+        <IconButton aria-label="no. of people">
+          <PeopleIcon color="primary"/>
+          <Typography variant="subtitle2">
+          {joinedlength}
+          </Typography>
+        </IconButton>
+        <Button size="small" onClick={() => DeleteSubGreddit(_id)}>DELETE</Button>
+        <Button size="small" onClick={() => OpenSubGreddit(_id)}>OPEN</Button>
+      </CardActions>
+    </React.Fragment>
+    );
+  };
+
   return (
     <div>
       <h1>My SubGreddiits</h1>
-      <form onSubmit={handleSubGreddit}>
-        <label>Name: </label>
-        <input
-          onChange={handleSubGredditChange}
-          type="text"
-          name="name"
-          placeholder="Enter the name.."
-        />
-        <br />
-        <label>Description:</label>
-        <br />
-        <textarea
-          onChange={handleSubGredditChange}
-          name="description"
-          placeholder="Enter your text here"
-        ></textarea>
-        <br />
-        <label>Tags:</label>
+      <Box
+          component="form"
+          sx={{
+            '& > :not(style)': { m: 1, width: '100ch' },
+          }}
+          noValidate
+          autoComplete="off"
+          onSubmit={handleSubGreddit}
+          className="mysubgreddit-inputform"
+        >
+        <TextField id="outlined-basic" name="name" label="Enter the name..." onChange={handleSubGredditChange} variant="outlined" />
+        <TextField id="outlined-basic" name="description" multiline rows={4} label="Describe..." onChange={handleSubGredditChange} variant="outlined" />
+        
         <div className="tags-input">
           <ul id="tags">
             {tags.map((tag, index) => (
@@ -210,11 +255,9 @@ const MySubGreddits = (props) => {
             className="input-tags"
             type="text"
             onKeyDown={(e) => addTags(e)}
-            placeholder="Press SPACE to add tags.."
-          />
+            placeholder="Press ENTER to add tags.."
+            />
         </div>
-        <br />
-        <label>Banned Keywords:</label>
         <div className="tags-input">
           <ul id="tags">
             {bannedKeywords.map((banned, index) => (
@@ -223,7 +266,7 @@ const MySubGreddits = (props) => {
                 <span
                   className="tag-close-icon"
                   onClick={() => removeBannedKeyword(index)}
-                >
+                  >
                   x
                 </span>
               </li>
@@ -233,32 +276,16 @@ const MySubGreddits = (props) => {
             className="input-tags"
             type="text"
             onKeyDown={(e) => addBannedKeyword(e)}
-            placeholder="Press SPACE to add banned keywords.."
-          />
+            placeholder="Press ENTER to add banned keywords.."
+            />
         </div>
-        <button
-          type="submit"
-          className="btn btn-lg btn-primary"
-          disabled={SubGredditDisabled}
-        >
-          Submit
-        </button>
-      </form>
-
-      <table>
-        <tbody>
-          {MySubGreddits?.map((subgreddit,index) => (
-            <tr key={index}>
-              <td>{subgreddit.users.length}</td>
-              <td>{subgreddit.name}</td>
-              <td>{subgreddit.description}</td>
-              <td><input className="btn btn-lg btn-info" type="button" onClick={() => DeleteSubGreddit(subgreddit._id)} name="deleteSubgreddit" value="Delete"/></td>
-              <td><input className="btn btn-lg btn-info" type="button" onClick={() => OpenSubGreddit(subgreddit._id) } name="openSubgreddit" value="Open"/></td>
-              {/* print comma separated banned keyword */}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        <Button type="submit" variant="contained" disabled={SubGredditDisabled}>Submit</Button>
+      </Box>
+      {MySubGreddits?.map((subgreddit,index) => (
+          <Box key={index} sx={{ minWidth: 275}}>
+            <Card variant="outlined">{card(subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,subgreddit.tags,subgreddit.bannedKeywords)}</Card>
+          </Box>
+      ))}
     </div>
   );
 };

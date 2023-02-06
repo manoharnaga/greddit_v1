@@ -1,29 +1,66 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Tab, Tabs, Navbar } from 'react-bootstrap';
+import PropTypes from 'prop-types';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
-// load page on refresh not handled!!!!
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
 
 const SubGredditMod = () => {
-    
     const [SubGredditData, setSubGredditData] = useState({
       moderator: "",
       name: "",
       description: "",
-      users: ["u12"],
-      requests: ["r137"],
-      blocked: ["b34"],
+      joined: ["u123"],
+      requested: ["r145"],
+      blocked: ["b374"],
       tags: [],
       bannedKeywords: [],
+      post: []
     });
+    
+    const [value, setValue] = useState(0);
 
-    const [key, setKey] = useState("Users");
     let location = useLocation();
     useEffect(() => {
       const _id = localStorage.getItem('modsubgredditId');
       const getSubGredditData = async () => {
         console.log("Page Loaded/Refreshed");
-        await fetch(`http://localhost:5000/mysubgredditsmod/data`, {
+        await fetch(`http://localhost:7000/mysubgredditsmod/data`, {
           method: 'POST',
           crossDomain: true,
           body: JSON.stringify({id:_id}),
@@ -37,7 +74,7 @@ const SubGredditMod = () => {
           .then((data) => {
             console.log(data);
             if (data.status === "modsubgredditUsers sent") {
-              const MySubgredditData = data.MySubgreddits;
+              const MySubgredditData = data.MySubgreddit;
               setSubGredditData(MySubgredditData);
             } else {
               console.log(
@@ -54,7 +91,7 @@ const SubGredditMod = () => {
     },[location.pathname]);
     
     const handleRequest = async (username,flagRequest) => {
-      await fetch(`http://localhost:5000/mysubgredditsmod/request`, {
+      await fetch(`http://localhost:7000/mysubgredditsmod/request`, {
         method: 'PUT',
         crossDomain: true,
         body: JSON.stringify({id:location.state.id,username:username,flagRequest:flagRequest}),
@@ -80,27 +117,27 @@ const SubGredditMod = () => {
         });
     };
 
-    const handleTabClick = (tabKey) => {
-      setKey(tabKey);
-      console.log("SubGredditData",SubGredditData);
-      // if(tabKey === "Users"){
-      //   // getSubGredditData();
-      // }
+
+    const handleChange = (event, newValue) => {
+      setValue(newValue);
     };
-    
+
     return (
-      <Navbar bg="light">
-      <Navbar.Brand href="#">Navbar</Navbar.Brand>
-        <Tabs
-          id="controlled-tab-example"
-          activeKey={key}
-          onSelect={handleTabClick}
-        >
-        <Tab eventKey="Users" title="Users">
+      <div>
+      <Box sx={{ width: '100%' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
+            <Tab label="Users" {...a11yProps(0)} />
+            <Tab label="Joining Requests" {...a11yProps(1)} />
+            <Tab label="Stats" {...a11yProps(2)} />
+            <Tab label="Reported" {...a11yProps(3)} />
+          </Tabs>
+        </Box>
+        <TabPanel value={value} index={0}>
           <div>
             <table>
                 <tbody>
-                    {SubGredditData.users?.map((user,index) => (
+                    {SubGredditData.joined?.map((user,index) => (
                         <tr key={index}>
                             <td>{user}</td>
                         </tr>
@@ -113,12 +150,12 @@ const SubGredditMod = () => {
                 </tbody>
             </table>
           </div>
-        </Tab>
-        <Tab eventKey="joiningRequest" title="Tab 2">
+        </TabPanel>
+        <TabPanel value={value} index={1}>
           <div>
             <table>
                 <tbody>
-                    {SubGredditData.requests?.map((user,index) => (
+                    {SubGredditData.requested?.map((user,index) => (
                         <tr key={index}>
                             <td>{user}</td>
                             <td>
@@ -132,12 +169,12 @@ const SubGredditMod = () => {
                 </tbody>
             </table>
           </div>
-        </Tab>
-        <Tab eventKey="contact" title="Tab 3">
+        </TabPanel>
+        <TabPanel value={value} index={2}>
           Tab 3 Content
-        </Tab>
-      </Tabs>
-      </Navbar>
+        </TabPanel>
+      </Box>
+    </div>
     );
 }
 

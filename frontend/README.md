@@ -27,6 +27,12 @@
 - username is used to identify users in 'Followers/Following'
 - both Followers/Following won't be shown at once - only one of two will be displayed
 - SubGredditMod -- Moderator of MySubgredditsPage
+
+
+- AkaSubGreddit
+    - MySubgreddits - User
+        - SubgredditMod
+        
 <!-- - Toggle between Followers/Following - only one of two will be displayed -->
 
 

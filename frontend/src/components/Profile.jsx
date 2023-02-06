@@ -13,7 +13,7 @@ const Profile = (props) => {
     }
     
     const removeFollow = async (username,followerUsername,flagFollow) => {
-        await fetch(`http://localhost:5000/profile/followers`, {
+        await fetch(`http://localhost:7000/profile/followers`, {
         method: 'PUT',
         crossDomain: true,
         body: JSON.stringify({username:username,followerUsername:followerUsername,flagFollow:flagFollow}),

@@ -19,6 +19,8 @@ const authRoutes = require("./Auth/auth");
 const profileRoutes = require("./Profile/editprofile");
 const mySubgredditRoutes = require("./MySubGreddit/mySubGreddit");
 const mySubgredditMODRoutes = require("./SubGredditMod/SubGredditMod");
+const AkaSubbgredditRoutes = require("./AkaSubGreddits/AkaSubgreddit");
+const SavePost = require("./Savepost/Savepost");
 
 //app
 const app = express();
@@ -67,8 +69,10 @@ app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/mysubgreddits", mySubgredditRoutes);
 app.use("/mysubgredditsmod",mySubgredditMODRoutes);
+app.use("/akasubgreddits",AkaSubbgredditRoutes);
+app.use("/savepost",SavePost)
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 7000;
 app.listen(port, () => {
   console.log(`Server is running on ${port}`);
 });
