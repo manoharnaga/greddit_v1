@@ -96,11 +96,11 @@ const Profile = (props) => {
 
             <table style={{display:display.Follower}}>
                 <tbody>
-                    {props.userData.followers?.map((follower) => (
-                        <tr key={follower.id}>
-                            <td>{follower.username}</td>
+                    {props.userData.followers?.map((follower,index) => (
+                        <tr key={index}>
+                            <td>{follower}</td>
                             <td>
-                                <button onClick={() => {removeFollow(props.userData.username,follower.username,1);}} className="btn btn-lg btn-secondary">Remove</button>
+                                <button onClick={() => {removeFollow(props.userData.username,follower,1);}} className="btn btn-lg btn-secondary">Remove</button>
                             </td>
                         </tr>
                         ))}
@@ -116,12 +116,12 @@ const Profile = (props) => {
 
             <table style={{display:display.Following}}>
                 <tbody>
-                    {props.userData.following?.map((following) => (
-                        <tr key={following.id}>
-                            <td>{following.username}</td>
+                    {props.userData.following?.map((following,index) => (
+                        <tr key={index}>
+                            <td>{following}</td>
                             <td>
                             <button onClick={() => {
-                                removeFollow(props.userData.username,following.username,2);
+                                removeFollow(props.userData.username,following,2);
                             }} 
                                 className="btn btn-lg btn-secondary">Unfollow</button>
                             </td>

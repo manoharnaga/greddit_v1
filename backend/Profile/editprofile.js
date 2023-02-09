@@ -15,19 +15,19 @@ router.put("/followers", async (req, res) => {
       // remove followUser from followers[] of user - higher
       // remove User from following[] of followUser - lower
       user.followers = user.followers.filter((followers) => {
-        return followers.username !== followerUsername;
+        return followers !== followerUsername;
       });
       followUser.following = followUser.following.filter((following) => {
-        return following.username !== username;
+        return following !== username;
       });
     } else if (flagFollow === 2) {
       // remove followUser from following[] of user - lower
       // remove User from followers[] of followUser - higher
       user.following = user.following.filter((following) => {
-        return following.username !== followerUsername;
+        return following !== followerUsername;
       });
       followUser.followers = followUser.followers.filter((followers) => {
-        return followers.username !== username;
+        return followers !== username;
       });
     }
 

@@ -6,6 +6,9 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Avatar from '@mui/material/Avatar';
+
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -103,9 +106,35 @@ const AkaSubGreddit = (props) => {
     navigate(`/akasubgreddits/${_id}`,{state:{id:_id}});
   };
 
-  const card = (name,description,postlength,joinedlength,_id) => {
+  const joinRequest = () => {
+    
+  }
+
+  const card = (moderator,name,description,postlength,joinedlength,_id,isJoined) => {
     return (
     <React.Fragment>
+      <CardHeader
+        avatar={
+          <Avatar sx={{ bgcolor: "grey" }} aria-label="recipe">
+            M
+          </Avatar>
+        }
+        action={
+            isJoined ?
+            <Button size="small" disabled>
+              JOINED
+            </Button>
+            :
+            <Button size="small" onClick={() => {
+              joinRequest();
+            }}>
+              JOIN
+            </Button> 
+            
+        }
+        title={moderator}
+        subheader="September 14, 2016"
+      />
       <CardContent>
         <Typography variant="h4" component="div">
           {name}
@@ -149,14 +178,14 @@ const AkaSubGreddit = (props) => {
     {AkaSubGreddits?.map((subgreddit,index) => (
       subgreddit.joined.includes(props.userData.username) ?
           <Box key={index} sx={{ minWidth: 275}}>
-            <Card variant="outlined">{card(subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id)}</Card>
+            <Card variant="outlined">{card(subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,1)}</Card>
           </Box> : null
     ))}
 
     {AkaSubGreddits?.map((subgreddit,index) => (
       !subgreddit.joined.includes(props.userData.username) ?
           <Box key={index} sx={{ minWidth: 275}}>
-            <Card variant="outlined">{card(subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id)}</Card>
+            <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,0)}</Card>
           </Box> : null
     ))}
   </div>

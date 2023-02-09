@@ -105,7 +105,6 @@ const Post = (props) => {
   };
 
   const handlePostCommentChange = (e) => {
-    console.log(e.target.value);
     setComment(e.target.value);
     setCommentDisabled(!(e.target.value.length > 0));
   };
@@ -214,16 +213,17 @@ const Post = (props) => {
           </Avatar>
         }
         action={
-            // props.userData.following.includes(postedBy) ?
+            props.userData.following.includes(postedBy) ?
+            <Button size="small" disabled>
+              FOLLOWING
+            </Button>
+            :
             <Button size="small" onClick={() => {
               addFollow(postedBy,props.userData.username);
             }}>
               FOLLOW
             </Button> 
-            // :
-            // <Button size="small" disabled>
-            //   FOLLOWING
-            // </Button>
+            
         }
         title={postedBy}
         subheader="September 14, 2016"

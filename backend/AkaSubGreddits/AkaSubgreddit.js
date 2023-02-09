@@ -17,7 +17,6 @@ router.get("/dataall", async (req, res) => {
   }
 });
 
-
 // Aka Subgreddit One
 
 router.post("/data", async (req, res) => {
@@ -70,8 +69,6 @@ router.put("/addpost", async (req, res) => {
     res.status(500).send({ status: "Error Creating Post!" });
   }
 });
-
-
 
 // Aka Subgreddit One - Posts
 
@@ -138,8 +135,6 @@ router.put("/updatepost", async (req, res) => {
   }
 });
 
-
-
 // Aka Subgreddit One - Posts - FollowBtn
 
 const db = require("../models/User");
@@ -152,16 +147,18 @@ router.put("/follow", async (req, res) => {
     return res.json({ status: "User Doesn't Exist!-followers", username });
   }
   try {
-      // add followUser to followers[] of user - higher
-      // add User to following[] of followUser - lower
-      if(user.followers.includes(followerUsername) || followUser.following.includes(username)){
-        return res.json({ status: "Already Following!", username });
-      }
-      else{
-        user.followers = user.followers.push(followerUsername);
-        followUser.following = followUser.following.push(username);
-      }
-
+    // add followUser to followers[] of user - higher
+    // add User to following[] of followUser - lower
+    if (
+      user.followers.includes(followerUsername) ||
+      followUser.following.includes(username)
+    ) {
+      return res.json({ status: "Already Following!", username });
+    } else {
+      user.followers.push(followerUsername);
+      followUser.following.push(username);
+    }
+    console.log(username);
     let firstResponse = {};
     await followUser
       .save()
@@ -170,13 +167,16 @@ router.put("/follow", async (req, res) => {
     await user
       .save()
       .then((data) =>
-        res.json({ status: "both recieved - from AkaSubGreddit", firstResponse, data })
+        res.json({
+          status: "both recieved - from AkaSubGreddit",
+          firstResponse,
+          data,
+        })
       )
       .catch((error) => console.error("Error:", error));
   } catch (error) {
     res.status(500).send({ status: "Error updating followers list!" });
   }
 });
-
 
 module.exports = router;

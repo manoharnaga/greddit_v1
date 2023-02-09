@@ -20,18 +20,8 @@ const Form1 = (props) => {
     age: "",
     phno: "",
     password: "",
-    followers: [
-      { id: 1, username: 'abc' },
-      { id: 2, username: 'abc1' },
-      { id: 3, username: 'abc2' },
-      { id: 4, username: 'abc3' }, 
-    ],
-    following: [
-      { id: 1, username: 'abc' },
-      { id: 2, username: 'abc1' },
-      { id: 3, username: 'abc2' },
-      { id: 4, username: 'abc3' },
-    ]
+    followers: ['abc' ,'abc1','abc2','abc3'],
+    following: ['abc' ,'abc1','abc2','abc3']
   });
 
   if(props.Loginval === "true"){      // already logged in!
