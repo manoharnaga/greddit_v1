@@ -17,6 +17,49 @@ router.get("/dataall", async (req, res) => {
   }
 });
 
+router.put("/joinreq", async (req, res) => {
+  const { id, userId, isJoinOrLeave } = req.body;
+  // userId ====> username of user
+  const AkaSubgreddit = await Subgreddit.findOne({ _id: id });
+  if (!AkaSubgreddit) {
+    return res.json({ status: "No Subgreddits found!" });
+  }
+
+  try {
+    if(isJoinOrLeave === 1){
+      if(AkaSubgreddit.leftsub.includes(userId)){
+        return res.json({ status: "Already left Subgreddit before!" });
+      }
+      else{
+        AkaSubgreddit.requested.push(userId);
+        console.log("JoinRequestSent!", AkaSubgreddit);
+      }
+    }
+    else if(isJoinOrLeave === 2){
+      AkaSubgreddit.joined = AkaSubgreddit.joined.filter((joinedUser) => {
+        return joinedUser !== userId;
+      })
+      AkaSubgreddit.leftsub.push(userId);
+    }
+    await AkaSubgreddit.save()
+      .then( async (data) => {
+          const AkaSubgreddits = await Subgreddit.find();
+          res.json({
+            status: "Join/Leave Request sent Successfully!",
+            AkaSubgreddits: AkaSubgreddits,
+            SubgredditData:data
+          })
+        }
+      )
+      .catch((error) => console.error("Error:", error));
+  } catch (error) {
+    res.status(500).send({ status: "Error Sending Joining Request!" });
+  }
+});
+
+
+
+
 // Aka Subgreddit One
 
 router.post("/data", async (req, res) => {

@@ -106,10 +106,33 @@ const AkaSubGreddit = (props) => {
     navigate(`/akasubgreddits/${_id}`,{state:{id:_id}});
   };
 
-  const joinRequest = () => {
-    
+  const joinOrLeaveSubGreddit = (subgredditId,isJoinOrLeave) => {
+    console.log('joinreq');
+    fetch(`http://localhost:7000/akasubgreddits/joinreq`, {
+      method: "PUT",
+      crossDomain: true,
+      body: JSON.stringify({id: subgredditId,userId: props.userData.username,isJoinOrLeave: isJoinOrLeave}),
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if(data.status === "Join/Leave Request sent Successfully!"){
+          console.log("join/leave request akasubgreddit - Successfull!",data);
+          const AkaSubgreddits = data.AkaSubgreddits;
+          setAkaSubGreddits(AkaSubgreddits);
+        }
+        else if(data.status === "Already left Subgreddit before!"){
+          alert("Why the hell you left Our Subgreddit before!");
+        }
+      })
+      .catch((error) => console.error("Error:", error));
   }
 
+  
   const card = (moderator,name,description,postlength,joinedlength,_id,isJoined) => {
     return (
     <React.Fragment>
@@ -126,11 +149,10 @@ const AkaSubGreddit = (props) => {
             </Button>
             :
             <Button size="small" onClick={() => {
-              joinRequest();
-            }}>
+              joinOrLeaveSubGreddit(_id,1);
+            }} >
               JOIN
             </Button> 
-            
         }
         title={moderator}
         subheader="September 14, 2016"
@@ -156,7 +178,9 @@ const AkaSubGreddit = (props) => {
           {joinedlength}
           </Typography>
         </IconButton>
-        {/* <Button size="small" onClick={() => LeaveSubGreddit(_id)}>LEAVE</Button> */}
+        {isJoined ? 
+        <Button size="small" onClick={() => joinOrLeaveSubGreddit(_id,2)} disabled={(moderator===props.userData.username)}>LEAVE</Button>
+        : null }
         <Button size="small" onClick={() => OpenSubGreddit(_id)}>OPEN</Button>
       </CardActions>
     </React.Fragment>
@@ -178,14 +202,14 @@ const AkaSubGreddit = (props) => {
     {AkaSubGreddits?.map((subgreddit,index) => (
       subgreddit.joined.includes(props.userData.username) ?
           <Box key={index} sx={{ minWidth: 275}}>
-            <Card variant="outlined">{card(subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,1)}</Card>
+            <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,true)}</Card>
           </Box> : null
     ))}
 
     {AkaSubGreddits?.map((subgreddit,index) => (
       !subgreddit.joined.includes(props.userData.username) ?
           <Box key={index} sx={{ minWidth: 275}}>
-            <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,0)}</Card>
+            <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,false)}</Card>
           </Box> : null
     ))}
   </div>

@@ -45,6 +45,7 @@ let subGredditSchema = new Schema(
     joined: [],
     requested: [],
     blocked: [],
+    leftsub: [],
     post: [Posts]
   },
   {
