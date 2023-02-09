@@ -19,14 +19,9 @@ let Posts = new SchemaPost(
       type: String,
       required: true,
     },
-    upvotes: {
-      type: Number,
-      required: true
-    },
-    downvotes: {
-      type: Number,
-      required: true
-    },
+    // we store upvotes as list of id's/usernames of users who upvoted/downvoted
+    upvotes: [],  
+    downvotes: [],
     comments: [String]
   }
 );

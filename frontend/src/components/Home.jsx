@@ -165,7 +165,15 @@ const Home = (props) => {
           </Box>
         </Toolbar>
       </Container>
+      <input type="submit" className="btn btn-lg btn-secondary" onClick={
+            (event) => {
+                event.preventDefault();
+                props.Loginfunc("false");
+            }
+        } 
+      value="Log out"></input>
     </AppBar>
+    
   );
 }
 

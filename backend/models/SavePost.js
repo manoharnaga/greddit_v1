@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 let SavePost = new Schema(
 {
+    savedby: {
+        type: String,
+        required: true,
+    },
     subgreddit: {
         type: String,
         required: true,
@@ -23,14 +27,9 @@ let SavePost = new Schema(
         type: String,
         required: true,
     },
-    upvotes: {
-        type: Number,
-        required: true
-    },
-    downvotes: {
-        type: Number,
-        required: true
-    },
+    // we store upvotes as list of id's/usernames of users who upvoted/downvoted
+    upvotes: [String],  
+    downvotes: [String],
     comments: [String]
 },{
    timestamps: true,

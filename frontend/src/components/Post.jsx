@@ -11,6 +11,8 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import CardHeader from '@mui/material/CardHeader';
@@ -31,11 +33,16 @@ const style = {
 };
 
 
-
 const Post = (props) => {
-  const [SubGredditData, setSubGredditData] = useState({obj:"dsfds"});
+  let location = useLocation();
+  const [SubGredditData, setSubGredditData] = useState(() => {
+    console.log('helox');
+    localStorage.setItem('akasubgredditId',location.pathname.substring(location.pathname.lastIndexOf('/') + 1));
+  });
   const [PostDisabled, setPostDisabled] = useState(true);
   const [Text, setText] = useState('');
+
+  // const [UpdatePost, setUpdatePost] = useState();
 
   const [CommentDisabled, setCommentDisabled] = useState(true);
   const [Comment, setComment] = useState('');
@@ -52,21 +59,13 @@ const Post = (props) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  let location = useLocation();
-
   // localStorage.setItem('subgredditdata',JSON.stringify(SubGredditData));
+  // console.log(location.pathname.substring(location.pathname.lastIndexOf('/') + 1));
 
   useEffect(() => {
     const _id = localStorage.getItem('akasubgredditId');
-    // let akaPostFlag = localStorage.getItem('akapostflag');
+    
     // const SubGredditDatalocal = JSON.parse(localStorage.getItem('subgredditdata'));
-    // if(akaPostFlag !== 2){
-    //   akaPostFlag = 1;
-    //   localStorage.setItem('akasubgredditId', 2);
-    // }
-    // else{
-    //   akaPostFlag = 2;
-    // }
 
     const getSubGredditData = async () => {
       console.log("Page Loaded/Refreshed");
@@ -101,7 +100,6 @@ const Post = (props) => {
   },[location.pathname]);
   
   const handlePostTextChange = (e) => {
-    console.log(e.target.value);
     setText(e.target.value);
     setPostDisabled(!(e.target.value.length > 0));
   };
@@ -156,7 +154,56 @@ const Post = (props) => {
     .catch(error => console.error('Error:', error));
   }
 
-  
+  const handleUpdatePost = (UpdatePost) => {
+    if (CommentDisabled && UpdatePost.comment!=="-1") return;
+    console.log("UpdatePost");
+
+    fetch(`http://localhost:7000/akasubgreddits/updatepost`, {
+      method: "PUT",
+      crossDomain: true,
+      body: JSON.stringify(UpdatePost),
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("post reached server!",data);
+        if(data.status === "Post Updated Successfully!"){
+          setSubGredditData(data.SubgredditData);
+        }
+      })
+      .catch((error) => console.error("Error:", error));
+  };
+
+
+  const addFollow = async (username,followerUsername) => {
+
+    await fetch(`http://localhost:7000/akasubgreddits/follow`, {
+    method: 'PUT',
+    crossDomain: true,
+    body: JSON.stringify({username:username,followerUsername:followerUsername}),
+    headers: {
+        'Content-Type': 'application/json',
+        Accept:"application/json",
+        "Access-Control-Allow-Origin": "*",
+    }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === "both recieved - from AkaSubGreddit"){
+          console.log("both recieved - from AkaSubGreddit",data);
+          const userdata = data.firstResponse;
+          props.setUserData(userdata);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
   const card = (id,postedBy,Text,upvotes,downvotes,comments) => {
     return (
       <React.Fragment>
@@ -167,9 +214,16 @@ const Post = (props) => {
           </Avatar>
         }
         action={
-          <Button size="small">
-            FOLLOW
-          </Button>
+            // props.userData.following.includes(postedBy) ?
+            <Button size="small" onClick={() => {
+              addFollow(postedBy,props.userData.username);
+            }}>
+              FOLLOW
+            </Button> 
+            // :
+            // <Button size="small" disabled>
+            //   FOLLOWING
+            // </Button>
         }
         title={postedBy}
         subheader="September 14, 2016"
@@ -183,13 +237,20 @@ const Post = (props) => {
         </Link>
         <TextField id="standard-basic" label="Standard" variant="standard" name="comment" onChange={handlePostCommentChange}/>
         <Button disabled={CommentDisabled} onClick={() =>{
-          setSubGredditData(prevState => {
-            prevState.post[id].comments.push(Comment);
-            return {
-              ...SubGredditData,
-              post: prevState.post
+          let voteUserId = props.userData.username;
+          let UpdatePost = {
+            id:SubGredditData._id,
+            postid: id,
+            upvotesid: "-1",
+            downvotesid: "-1",
+            comment: {
+              comment: Comment,
+              userId: voteUserId
             }
-          });
+          }
+
+          handleUpdatePost(UpdatePost);
+
         }
         }>SAVE</Button>
         <Button onClick={() => {
@@ -198,42 +259,57 @@ const Post = (props) => {
         }}>CANCEL</Button>
 
         {comments?.map((comment,index) => (
+          //  {comment.userId} : 
           <Typography key={index} variant="body2">
-            {comment}
+           {comment}
           </Typography>
         ))}
       </CardContent>
       <CardActions>
         <IconButton onClick={() => {
-          setSubGredditData(prevState => {
-            prevState.post[id].upvotes = prevState.post[id].upvotes + 1;
-            return {
-              ...SubGredditData,
-              post: prevState.post
-            }
-          });
+          let UpdatePost = {
+            id:SubGredditData._id,
+            postid: id,
+            upvotesid: props.userData.username,
+            downvotesid: "-1",
+            comment: "-1"
+          }
+          
+          handleUpdatePost(UpdatePost);
+
         }} aria-label="no. of posts">
-          <ThumbUpIcon />
-          <Typography variant="body2">
-            {upvotes}
+
+          {SubGredditData.post[id].upvotes.includes(props.userData.username) ?
+          <ThumbUpIcon color="primary"/> : <ThumbUpOutlinedIcon />} 
+          <Typography variant="subtitle2" color={
+            SubGredditData.post[id].upvotes.includes(props.userData.username) ? "primary":null
+          }>
+            {upvotes?.length}
           </Typography>
         </IconButton>
         <IconButton onClick={() => {
-          setSubGredditData(prevState => {
-            prevState.post[id].downvotes = prevState.post[id].downvotes + 1;
-            return {
-              ...SubGredditData,
-              post: prevState.post
-            }
-          });
+          let UpdatePost = {
+            id:SubGredditData._id,
+            postid: id,
+            upvotesid: "-1",
+            downvotesid: props.userData.username,
+            comment: "-1"
+          }
+
+          handleUpdatePost(UpdatePost);
+
         }} aria-label="no. of people">
-          <ThumbDownIcon />
-          <Typography variant="subtitle2">
-          {downvotes}
+          {SubGredditData.post[id].downvotes.includes(props.userData.username) ?
+          <ThumbDownIcon color="primary"/> : <ThumbDownOutlinedIcon />} 
+          <Typography variant="subtitle2" color={
+            SubGredditData.post[id].downvotes.includes(props.userData.username) ? "primary":null
+          }>
+          {downvotes?.length}
           </Typography>
         </IconButton>
         <Button size="small" onClick={() => {
           const SavedPost = {
+            savedby: props.userData.username,
             subgreddit: SubGredditData.name,
             moderator: SubGredditData.moderator,
             postedBy: postedBy,

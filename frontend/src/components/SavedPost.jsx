@@ -1,6 +1,5 @@
 
 const SavedPost = () => {
-
     return (
         <h1>Saved Posts</h1>
     );
