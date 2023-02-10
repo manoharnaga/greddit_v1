@@ -50,4 +50,30 @@ router.put("/request", async (req, res) => {
   }
 });
 
+
+router.put("/delpost", async (req, res) => {
+  const { subid, postid } = req.body;
+  const MySubgredditMod = await Subgreddit.findOne({ _id: subid });
+  // check if any Subgreddit exists -- empty fields are also handled
+  if (!MySubgredditMod) {
+    return res.json({ status: "No Subgreddits found!", subid });
+  }
+  try {
+    MySubgredditMod.post = 
+    MySubgredditMod.post.slice(postid)
+    .concat(MySubgredditMod.post.slice(postid+1,MySubgredditMod.post?.length));
+    
+    await MySubgredditMod.save()
+      .then((data) =>
+        res.json({
+          status: "joiningRequest Successfull!",
+          SubgredditData: data,
+        })
+      )
+      .catch((error) => console.error("Error:", error));
+  } catch (error) {
+    res.status(500).send({ status: "Error updating Joining Requests list!" });
+  }
+});
+
 module.exports = router;

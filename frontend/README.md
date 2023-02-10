@@ -15,10 +15,10 @@
 - load page on refresh not handled -- SubgredditMod
 - cleanup localstorage -- SubgredditMod,wherever used && see useEffect Cleanup
 
-- check line 32 in MySubgreddits
-### DONE
-- deployed link in text field.
-- empty followers/following
+
+-   window.location.reload(false); - remove everywhere and set() data ==> render
+
+
 
 
 ## Claims

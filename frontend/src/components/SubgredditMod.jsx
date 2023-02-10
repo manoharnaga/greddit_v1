@@ -118,30 +118,36 @@ const SubGredditMod = (props) => {
     };
 
 
-    // const DeletePostReport = (_id) => {
-    //   fetch(`http://localhost:7000/mysubgredditsmod/delpost`, {
-    //     method: "DELETE",
-    //     crossDomain: true,
-    //     // body: JSON.stringify({id:_id}),
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Accept: "application/json",
-    //       "Access-Control-Allow-Origin": "*",
-    //     },
-    //   })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     console.log(data);
-    //     window.location.reload(false);
-    //   })
-    //   .catch((error) => console.error("Error:", error));
-    // };
+    const DeletePostReport = (subid,postid) => {
+      fetch(`http://localhost:7000/mysubgredditsmod/delpost`, {
+        method: "PUT",
+        crossDomain: true,
+        body: JSON.stringify({subid:subid,postid:postid}),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        if(data.status === "Post Deleted by moderator Successfull!"){
+          console.log("post deleted by moderator duccessfull",data);
+          const updatedSubGreddit = data.SubgredditData;
+          setSubGredditData(updatedSubGreddit);
+        }
+        else{
+          console.log("Error Updating Joining Requests!");
+        }
+    })
+      .catch((error) => console.error("Error:", error));
+    };
 
     const handleChange = (event, newValue) => {
       setValue(newValue);
     };
 
-    const card = (reportedBy,reportedVictim,concern,Text) => {
+    const card = (postid,reportedBy,reportedVictim,concern,Text) => {
       return (
         <React.Fragment>
         <CardContent>
@@ -201,7 +207,7 @@ const SubGredditMod = (props) => {
             
           }} disabled={ignoreReport}>BLOCK</Button>
           <Button size="small" onClick={() => {
-            
+            DeletePostReport(SubGredditData?._id,postid);
           }} disabled={ignoreReport}>DELETE POST</Button>
           <Button size="small" onClick={() => {
             setIgnoreReport(true);
@@ -262,7 +268,7 @@ const SubGredditMod = (props) => {
         <TabPanel value={value} index={2}>
           {SubGredditData?.report?.map((report,index) => (
             <Box key={index} sx={{ minWidth: 275}}>
-              <Card variant="outlined">{card(report.reportedBy,report.reportedVictim,report.concern,report.Text)}</Card>
+              <Card variant="outlined">{card(report.postid,report.reportedBy,report.reportedVictim,report.concern,report.Text)}</Card>
             </Box>
           ))}
         </TabPanel>
