@@ -70,7 +70,7 @@ const Post = (props) => {
     const getSubGredditData = async () => {
       console.log("Page Loaded/Refreshed");
       await fetch(`http://localhost:7000/akasubgreddits/data`, {
-        method: 'POST',
+        method: "POST",
         crossDomain: true,
         body: JSON.stringify({id:_id}),
         headers: {
@@ -108,6 +108,7 @@ const Post = (props) => {
     setComment(e.target.value);
     setCommentDisabled(!(e.target.value.length > 0));
   };
+
   const handleSubGreddit = (e) => {
     e.preventDefault();
     if (PostDisabled) return;
@@ -137,9 +138,9 @@ const Post = (props) => {
       .catch((error) => console.error("Error:", error));
   };
 
-  const handleSavePost = async (SavedPost) => {
-    await fetch(`http://localhost:7000/savepost/add`, {
-      method: 'POST',
+  const handleSavedPost = async (SavedPost) => {
+    await fetch(`http://localhost:7000/savedpost/add`, {
+      method: "PUT",
       crossDomain: true,
       body: JSON.stringify(SavedPost),
       headers: {
@@ -149,7 +150,12 @@ const Post = (props) => {
       }
     })
     .then(res => res.json())
-    .then(data => console.log(data))
+    .then((data) => {
+      console.log("savedpost reached server!",data);
+      if(data.status === "Saved Post Successfully!"){
+        setSubGredditData(data.SubgredditData);
+      }
+    })
     .catch(error => console.error('Error:', error));
   }
 
@@ -213,7 +219,7 @@ const Post = (props) => {
           </Avatar>
         }
         action={
-            props.userData.following.includes(postedBy) ?
+            props.userData?.following?.includes(postedBy) ?
             <Button size="small" disabled>
               FOLLOWING
             </Button>
@@ -307,20 +313,21 @@ const Post = (props) => {
           {downvotes?.length}
           </Typography>
         </IconButton>
-        <Button size="small" onClick={() => {
-          const SavedPost = {
-            savedby: props.userData.username,
-            subgreddit: SubGredditData.name,
-            moderator: SubGredditData.moderator,
-            postedBy: postedBy,
-            postedIn: SubGredditData._id,
-            Text: Text,
-            upvotes: upvotes,
-            downvotes: downvotes,
-            comments: SubGredditData.post[id].comments
-          };
-          handleSavePost(SavedPost);
-        }}>SAVE</Button>
+        {
+          SubGredditData.post[id].savedby.includes(props.userData.username) ?
+          <Button disabled>SAVED</Button> 
+          :
+          <Button size="small" onClick={() => {
+            const SavedPost = {
+              subid: SubGredditData._id,
+              postid: id, 
+              savedby: props.userData.username,
+            };
+            handleSavedPost(SavedPost);
+          }}
+          >
+          SAVE</Button> 
+        }
       </CardActions>
     </React.Fragment>
     );

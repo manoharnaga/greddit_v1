@@ -35,7 +35,10 @@
 - AkaSubGreddit
     - MySubgreddits - User
         - SubgredditMod
-        
+
+
+
+- do block post, delete post
 <!-- - Toggle between Followers/Following - only one of two will be displayed -->
 
 

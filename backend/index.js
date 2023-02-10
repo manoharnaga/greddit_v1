@@ -20,7 +20,7 @@ const profileRoutes = require("./Profile/editprofile");
 const mySubgredditRoutes = require("./MySubGreddit/mySubGreddit");
 const mySubgredditMODRoutes = require("./SubGredditMod/SubGredditMod");
 const AkaSubbgredditRoutes = require("./AkaSubGreddits/AkaSubgreddit");
-const SavePost = require("./Savepost/Savepost");
+const SavedPost = require("./Savedpost/Savedpost");
 
 //app
 const app = express();
@@ -70,7 +70,7 @@ app.use("/profile", profileRoutes);
 app.use("/mysubgreddits", mySubgredditRoutes);
 app.use("/mysubgredditsmod",mySubgredditMODRoutes);
 app.use("/akasubgreddits",AkaSubbgredditRoutes);
-app.use("/savepost",SavePost)
+app.use("/savedpost",SavedPost)
 
 const port = process.env.PORT || 7000;
 app.listen(port, () => {

@@ -22,7 +22,34 @@ let Posts = new SchemaPost(
     // we store upvotes as list of id's/usernames of users who upvoted/downvoted
     upvotes: [],  
     downvotes: [],
-    comments: [String]
+    comments: [String],
+    savedby: [String]
+  }
+);
+
+const SchemaReport = mongoose.Schema;
+let Report = new SchemaReport(
+  {
+    postid: {
+      type: String,
+      required: true,
+    },
+    reportedBy: {
+      type: String,
+      required: true,
+    },
+    reportedVictim: {
+      type: String,
+      required: true,
+    },
+    concern: {
+      type: String,
+      required: true,
+    },
+    Text: {
+      type: String,
+      required: true,
+    }
   }
 );
 
@@ -46,7 +73,8 @@ let subGredditSchema = new Schema(
     requested: [],
     blocked: [],
     leftsub: [],
-    post: [Posts]
+    post: [Posts],
+    report: [Report]
   },
   {
     timestamps: true,

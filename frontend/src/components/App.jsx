@@ -98,7 +98,7 @@ const App = () => {
           <Route exact path="/login" element={<Form1 Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
           <Route exact path="/profile" element={<Profile Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
           <Route exact path="/mysubgreddits" element={<MySubGreddits Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData} />} />
-          <Route path="/mysubgreddits/:id" element={<SubGredditMod/>} /> 
+          <Route path="/mysubgreddits/:id" element={<SubGredditMod Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData} />} /> 
           <Route exact path="/akasubgreddits" element={<AkaSubGreddit Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData} />} />
           <Route exact path="/akasubgreddits/:id" element={<Post Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData} />} />
           <Route exact path="/savedpost" element={<SavedPost Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData} />} />

@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
 
 
 function TabPanel(props) {
@@ -40,22 +46,16 @@ function a11yProps(index) {
   };
 }
 
-const SubGredditMod = () => {
-    const [SubGredditData, setSubGredditData] = useState({
-      moderator: "",
-      name: "",
-      description: "",
-      joined: ["u123"],
-      requested: ["r145"],
-      blocked: ["b374"],
-      tags: [],
-      bannedKeywords: [],
-      post: []
+const SubGredditMod = (props) => {
+    let location = useLocation();
+    const [SubGredditData, setSubGredditData] = useState(() => {
+      console.log('heloy');
+      localStorage.setItem('modsubgredditId',location.pathname.substring(location.pathname.lastIndexOf('/') + 1));
     });
-    
+    const [ignoreReport,setIgnoreReport] = useState(false);
+
     const [value, setValue] = useState(0);
 
-    let location = useLocation();
     useEffect(() => {
       const _id = localStorage.getItem('modsubgredditId');
       const getSubGredditData = async () => {
@@ -118,8 +118,97 @@ const SubGredditMod = () => {
     };
 
 
+    // const DeletePostReport = (_id) => {
+    //   fetch(`http://localhost:7000/mysubgredditsmod/delpost`, {
+    //     method: "DELETE",
+    //     crossDomain: true,
+    //     // body: JSON.stringify({id:_id}),
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Accept: "application/json",
+    //       "Access-Control-Allow-Origin": "*",
+    //     },
+    //   })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     console.log(data);
+    //     window.location.reload(false);
+    //   })
+    //   .catch((error) => console.error("Error:", error));
+    // };
+
     const handleChange = (event, newValue) => {
       setValue(newValue);
+    };
+
+    const card = (reportedBy,reportedVictim,concern,Text) => {
+      return (
+        <React.Fragment>
+        <CardContent>
+          <table>
+            <tr>
+              <td>
+                <Typography variant="body1">
+                  Reported By: 
+                </Typography>
+              </td>
+              <td>
+                <Typography variant="body1">
+                  {reportedBy}
+                </Typography>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <Typography variant="body1">
+                  Reported Victim:
+                </Typography>
+              </td>
+              <td>
+                <Typography variant="body1">
+                  {reportedVictim}
+                </Typography>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <Typography variant="body1">
+                  Concern:
+                </Typography>
+              </td>
+              <td>
+                <Typography variant="body1">
+                  {concern}
+                </Typography>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <Typography variant="body1">
+                  Text:
+                </Typography>
+              </td>
+              <td>
+                <Typography variant="body1">
+                  {Text}
+                </Typography>
+              </td>
+            </tr>
+          </table>
+        </CardContent>
+        <CardActions>
+          <Button size="small" onClick={() => {
+            
+          }} disabled={ignoreReport}>BLOCK</Button>
+          <Button size="small" onClick={() => {
+            
+          }} disabled={ignoreReport}>DELETE POST</Button>
+          <Button size="small" onClick={() => {
+            setIgnoreReport(true);
+          }}>IGNORE</Button>
+        </CardActions>
+      </React.Fragment>
+      );
     };
 
     return (
@@ -137,12 +226,12 @@ const SubGredditMod = () => {
           <div>
             <table>
                 <tbody>
-                    {SubGredditData.joined?.map((user,index) => (
+                    {SubGredditData?.joined?.map((user,index) => (
                         <tr key={index}>
                             <td>{user}</td>
                         </tr>
                     ))}
-                    {SubGredditData.blocked?.map((blocked,index) => (
+                    {SubGredditData?.blocked?.map((blocked,index) => (
                         <tr key={index}>
                             <td>{blocked}</td>
                         </tr>
@@ -155,7 +244,7 @@ const SubGredditMod = () => {
           <div>
             <table>
                 <tbody>
-                    {SubGredditData.requested?.map((user,index) => (
+                    {SubGredditData?.requested?.map((user,index) => (
                         <tr key={index}>
                             <td>{user}</td>
                             <td>
@@ -171,7 +260,11 @@ const SubGredditMod = () => {
           </div>
         </TabPanel>
         <TabPanel value={value} index={2}>
-          Tab 3 Content
+          {SubGredditData?.report?.map((report,index) => (
+            <Box key={index} sx={{ minWidth: 275}}>
+              <Card variant="outlined">{card(report.reportedBy,report.reportedVictim,report.concern,report.Text)}</Card>
+            </Box>
+          ))}
         </TabPanel>
       </Box>
     </div>
