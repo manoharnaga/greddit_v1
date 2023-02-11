@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Profile = (props) => {
     const [display,setDisplay] = useState({
         Follower: "none",
         Following: "none"
     });
-    const [EditProfile,setEditProfile] = useState("");
-
+    // const [EditProfile,setEditProfile] = useState("");
+    let navigate = useNavigate();
+    
     if(props.Loginval === "false"){
         return <Navigate to="/login" />;
     }
@@ -37,9 +38,6 @@ const Profile = (props) => {
     }
 
     return (
-        (EditProfile === "openEditProfilePage") ?
-        <Navigate to="/editprofile"/>
-        :
         <div>
             <h1>Helo @{props.userData.username}</h1>
             <table>
@@ -72,14 +70,10 @@ const Profile = (props) => {
                         <td>
                             <button className="btn btn-lg btn-info" onClick={
                                 () => {
-                                    setEditProfile("openEditProfilePage");
-                                }
+                                    // setEditProfile("openEditProfilePage");
+                                        navigate("/editprofile");
+                                    }
                                 }>Edit Profile</button>
-                        </td>
-                    </tr>
-                    <tr colSpan="2">
-                        <td>
-                            {EditProfile}   
                         </td>
                     </tr>
                     <tr>

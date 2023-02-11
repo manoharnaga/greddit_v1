@@ -52,27 +52,33 @@ router.put("/request", async (req, res) => {
 
 
 router.put("/delpost", async (req, res) => {
-  const { subid, postid } = req.body;
+  const { subid, postid,postobjid, reportid } = req.body;
   const MySubgredditMod = await Subgreddit.findOne({ _id: subid });
   // check if any Subgreddit exists -- empty fields are also handled
   if (!MySubgredditMod) {
     return res.json({ status: "No Subgreddits found!", subid });
   }
   try {
-    MySubgredditMod.post = 
-    MySubgredditMod.post.slice(postid)
-    .concat(MySubgredditMod.post.slice(postid+1,MySubgredditMod.post?.length));
     
+    // We are storing the report in post itself 
+    // thus when the post is deleted the report 
+    // Automatically gets deleted
+    
+    MySubgredditMod.post = MySubgredditMod.post.filter((postobj) => {
+      return postobj._id != postobjid;
+    })
+    // console.log(MySubgredditMod.post);
+
     await MySubgredditMod.save()
       .then((data) =>
         res.json({
-          status: "joiningRequest Successfull!",
+          status: "Post Deleted by moderator Successfull!",
           SubgredditData: data,
         })
       )
       .catch((error) => console.error("Error:", error));
   } catch (error) {
-    res.status(500).send({ status: "Error updating Joining Requests list!" });
+    res.status(500).send({ status: "Error deleting reported post!" });
   }
 });
 

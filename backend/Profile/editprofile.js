@@ -8,7 +8,7 @@ router.put("/followers", async (req, res) => {
   const user = await db.findOne({ username: username });
   const followUser = await db.findOne({ username: followerUsername });
   if (!user || !followUser) {
-    return res.json({ status: "User Doesn't Exist!-followers", username });
+    return res.json({ status: "User Doesn't Exist!", username });
   }
   try {
     if (flagFollow === 1) {
@@ -50,18 +50,40 @@ router.put("/followers", async (req, res) => {
 
 
 router.put("/editprofile", async (req, res) => {
-  const { username } = req.body;
-  const user = await db.findOne({ username: username });
+  const { 
+    prevUsername,
+    prevPassword,
+    fname,
+    lname,
+    username,
+    emailid,
+    age,
+    phno,
+    password } = req.body;
+  const user = await db.findOne({ username: prevUsername });
   console.log("editprofile", req.body);
   if (!user) {
-    return res.json({ status: "Editprofile-User Not Found!", username });
+    return res.json({ status: "User Not Found!", username });
   }
   try {
-    user = req.body;
+
+    user.fname      = fname        
+    user.lname      = lname 
+    user.username   = username 
+    user.emailid    = emailid 
+    user.age        = age 
+    user.phno       = phno 
+    user.password   = password 
+
+    let Changedlogin = "no";
+    if(prevPassword !== password || prevUsername !== username){
+      Changedlogin = "yes"
+    }
+    console.log('User edited');
     await user
       .save()
-      .then((data) => res.json({ status: "profile edited", data }))
-      .catch((error) => console.error("Editprofile-Error:", error));
+      .then((data) => res.json({ status: "profile edited", data,Changedlogin:Changedlogin }))
+      .catch((error) => console.error("Error:", error));
   } catch (error) {
     res.status(500).send({ status: "Error updating Profile!" });
   }

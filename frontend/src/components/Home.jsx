@@ -1,179 +1,91 @@
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
+import HomeIcon from '@mui/icons-material/Home';
+import PersonIcon from '@mui/icons-material/Person';
+import LogoutIcon from '@mui/icons-material/Logout';
 import AdbIcon from '@mui/icons-material/Adb';
-
-
-const pages = ['profile', 'mysubgreddits', 'akasubgreddits','savedpost'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+import { Button } from "@mui/material";
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import CollectionsIcon from '@mui/icons-material/Collections';
 
 const Home = (props) => {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-  let navigate = useNavigate();
 
   if(props.Loginval === "false"){
     return <Navigate to="/login" />;
   }
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = (page_url) => {
-    // navigate('/profile');
-    navigate(`/${page_url}`);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-    
   return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            GRED
-          </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={() => handleCloseNavMenu(page)}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            GRED
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={() => handleCloseNavMenu(page)}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
-          </Box>
-
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
-      <input type="submit" className="btn btn-lg btn-secondary" onClick={
-            (event) => {
-                event.preventDefault();
-                props.Loginfunc("false");
-            }
-        } 
-      value="Log out"></input>
-    </AppBar>
-    
+    <div>
+      <div className="navbar navbar-expand-lg">
+        <a className="navbar-brand" href="/">
+          <AdbIcon color="primary"/>
+          <Button>Greddiit</Button>
+        </a>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarTogglerDemo01"
+          aria-controls="navbarTogglerDemo01"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
+          <ul className="navbar-nav ms-auto">
+            <li className="navbar-item">
+              <a className="nav-link" aria-current="page" href="/">
+                <Button>
+                <HomeIcon color="primary"/>
+                  HOME
+                </Button>
+              </a>
+            </li>
+            <li className="navbar-item">
+              <a className="nav-link" aria-current="page" href="/profile">
+                <Button>
+                <PersonIcon color="primary"/>
+                PROFILE
+                </Button>
+              </a>
+            </li>
+            <li className="navbar-item">
+              <a className="nav-link" aria-current="page" href="/mysubgreddits">
+                <Button>
+                <InsertPhotoIcon color="primary"/>
+                My Subgreddits
+                </Button>
+              </a>
+            </li>
+            <li className="navbar-item">
+              <a className="nav-link" aria-current="page" href="/akasubgreddits">
+                <Button>
+                <CollectionsIcon color="primary"/>
+                Aka Subgreddits
+                </Button>
+              </a>
+            </li>
+            <li className="navbar-item">
+              <a className="nav-link" aria-current="page" href="#logout">
+                <Button
+                  type="submit"
+                  // color="grey"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    props.Loginfunc("false");
+                  }}
+                >
+                <LogoutIcon color="action"/>
+                Log out
+                </Button>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <h1>Home</h1>
+    </div>
   );
 }
 

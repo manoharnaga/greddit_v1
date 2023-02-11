@@ -1,38 +1,31 @@
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 
 const EditProfile = (props) => {
     const [ProfileData, setProfileData] = useState({
-        fname: "dsf",
-        lname: "sdfafs",
-        username: "",
-        emailid: "",
-        age: "",
-        phno: "",
-        password: "",
-        followers: [
-          { id: 1, username: 'abc' },
-          { id: 2, username: 'abc1' },
-          { id: 3, username: 'abc2' },
-          { id: 4, username: 'abc3' }, 
-        ],
-        following: [
-          { id: 1, username: 'abc' },
-          { id: 2, username: 'abc1' },
-          { id: 3, username: 'abc2' },
-          { id: 4, username: 'abc3' },
-        ]
+        prevUsername: props.userData.username,
+        prevPassword: props.userData.password,
+        fname: props.userData.fname,
+        lname: props.userData.lname,
+        username: props.userData.username,
+        emailid: props.userData.emailid,
+        age: props.userData.age,
+        phno: props.userData.phno,
+        password: props.userData.password
     });
 
-    const [EditProfile,setEditProfile] = useState("openEditProfilePage");
-    const [EditProfileDisabled, setEditProfileDisabled] = useState(1);
+    // const [EditProfile,setEditProfile] = useState("openEditProfilePage");
+    const [EditProfileDisabled, setEditProfileDisabled] = useState(false);
+    let navigate = useNavigate();
+
 
     if(props.Loginval === "false"){
         return <Navigate to="/login" />;
     }
 
     const handleEditProfileChange = (e) => {
+        // console.log(e.target.value);
         setProfileData({
             ...ProfileData,
             [e.target.name]: e.target.value
@@ -47,7 +40,8 @@ const EditProfile = (props) => {
         setEditProfileDisabled(!(checkEditProfile && (e.target.value.length > 0)));
     }
 
-    const handleEditProfile = async () => {
+    const handleEditProfile = async (e) => {
+        e.preventDefault();
         await fetch(`http://localhost:7000/profile/editprofile`, {
         method: 'PUT',
         crossDomain: true,
@@ -60,11 +54,20 @@ const EditProfile = (props) => {
         })
         .then(res => res.json())
         .then(data => {
+            console.log("profile edited",data);
             if(data.status === "profile edited"){
-                console.log("profile edited",data);
                 const userdata = data.data;
-                props.setUserData(userdata);
-                // setEditProfile("Profile Updated Successfully!");//green
+                if(data.Changedlogin !== "no"){
+                    console.log("changed");
+                    // localStorage.setItem("username", JSON.stringify(userdata.username));
+                    // localStorage.setItem("password", JSON.stringify(userdata.password));
+                    props.Loginfunc("false");
+                }
+                else{
+                    props.setUserData(userdata);
+                    navigate("/profile");
+                    // setEditProfile("Profile Updated Successfully!");//green
+                }
             }
         })
         .catch(error => {
@@ -73,11 +76,9 @@ const EditProfile = (props) => {
         });
     }
 
-    // return <h1>Hello</h1>;
     return (
         <div>
             <h1>Edit Profile</h1>
-            {EditProfile==="openEditProfilePage"} ?
             <div>
                 <form onSubmit={handleEditProfile}>
                     <input onChange={handleEditProfileChange} value={ProfileData.fname}type="text" name="fname" placeholder="First Name" className="form-control" />
@@ -87,16 +88,17 @@ const EditProfile = (props) => {
                     <input onChange={handleEditProfileChange} value={ProfileData.age} type="number" name="age" placeholder="Age" className="form-control" />
                     <input onChange={handleEditProfileChange} value={ProfileData.phno} type="tel" name="phno" placeholder="Phone Number" className="form-control" />
                     <input onChange={handleEditProfileChange} value={ProfileData.password} type="password" name="password" placeholder="Password" className="form-control" />
-                    <button type="submit" className="btn btn-lg btn-primary" disabled={EditProfileDisabled}>
+                    <button type="submit" className="btn btn-lg btn-primary">
                     Submit Profile
                     </button>
-                    <button onClick={() => {setEditProfile("closeEditProfilePage");}}>
+                    <button onClick={() => {
+                            navigate("/profile");
+                        }
+                    }>
                         Close
                     </button>
                 </form>
             </div>
-            :
-            <Navigate to="/profile" />
         </div>
     );
 }

@@ -96,6 +96,8 @@ router.put("/addpost", async (req, res) => {
       upvotes: [],
       downvotes: [],
       comments: [],
+      savedby: [],
+      report: []
     });
 
     console.log("From Backend Post!", AkaSubgreddit);
@@ -110,6 +112,48 @@ router.put("/addpost", async (req, res) => {
       .catch((error) => console.error("Error:", error));
   } catch (error) {
     res.status(500).send({ status: "Error Creating Post!" });
+  }
+});
+
+
+router.put("/reportpost", async (req, res) => {
+  const { 
+    postobj_id,
+    postedIn,
+    postid,
+    reportedBy,
+    reportedVictim,
+    concern,
+    Text } = req.body;
+  const AkaSubgreddit = await Subgreddit.findOne({ _id: postedIn });
+  // check if any Subgreddit exists -- empty fields are also handled
+  if (!AkaSubgreddit) {
+    return res.json({ status: "No AkaSubgreddit found!", postedBy });
+  }
+
+  try {
+    AkaSubgreddit.post[postid].report.push({
+      postobj_id: postobj_id,
+      postid: postid,
+      reportedBy: reportedBy,
+      reportedVictim: reportedVictim,
+      concern: concern,
+      Text: Text
+    })
+
+    // console.log("ds",AkaSubgreddit.post[postid]);
+    console.log("From Backend Report!", AkaSubgreddit);
+
+    await AkaSubgreddit.save()
+      .then((data) =>
+        res.json({
+          status: "Post Created Successfully!",
+          SubgredditData: data
+        })
+      )
+      .catch((error) => console.error("Error:", error));
+  } catch (error) {
+    res.status(500).send({ status: "Error Creating Report!" });
   }
 });
 

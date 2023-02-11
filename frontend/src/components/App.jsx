@@ -1,7 +1,7 @@
 import { useState,useEffect } from "react";
 import { useLocation,Link, Route,Routes } from "react-router-dom";
 
-import Form1 from "./Form1";
+import LoginReg from "./LoginReg";
 import Home from './Home';
 import Profile from "./Profile";
 import MySubGreddits from "./MySubgreddits";
@@ -12,6 +12,8 @@ import Post from "./Post";
 import * as React from 'react';
 import { Toolbar } from "@mui/material";
 import SavedPost from "./SavedPost";
+import EditProfile from "./EditProfile";
+
 
 const App = () => {
   const [isLoggedin, setLogin] = useState(
@@ -36,6 +38,7 @@ const App = () => {
       const passwordSaved = JSON.parse(localStorage.getItem("password"));
       return {username:usernameSaved || "",password: passwordSaved || ""};
     }
+
     let loginData = loginDatafunc();
     const userObj = async () => {
       console.log('Page loaded/refreshed');
@@ -71,32 +74,30 @@ const App = () => {
     }
   }, [location.pathname]);
 
-
-
-
   return (
       <div>
-        <React.Fragment>
-          <Home position="fixed">
-            <Toolbar>{/* content */}</Toolbar>
-          </Home>
-          <Toolbar />
-        </React.Fragment>
-        {/* <h1>localStorage with React hooks</h1> */}
+        {/* <React.Fragment> */}
+        {/* <Home Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData} position="fixed">  */}
+        {/* <Toolbar>content</Toolbar> */}
+        {/* </Home> */}
+        {/* <Toolbar /> */}
+        {/* </React.Fragment> */}
+        
         <nav>
           <ul>
-            {/* <li><Link to="/editprofile">EditProfile</Link></li> */}
             <li><Link to="/">Home</Link></li>
             <li><Link to="/login">Login</Link></li>
             <li><Link to="/profile">Profile</Link></li>
+            <li><Link to="/editprofile">EditProfile</Link></li>
             <li><Link to="/mysubgreddits">My Sub Greddiits</Link></li>
             <li><Link to="/akasubgreddits">AkaSubGreddiits</Link></li>
           </ul>
         </nav>
         <Routes>
           <Route exact path="/" element={<Home Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
-          <Route exact path="/login" element={<Form1 Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
+          <Route exact path="/login" element={<LoginReg Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
           <Route exact path="/profile" element={<Profile Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
+          <Route exact path="/editprofile" element={<EditProfile Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData}/>} /> 
           <Route exact path="/mysubgreddits" element={<MySubGreddits Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData} />} />
           <Route path="/mysubgreddits/:id" element={<SubGredditMod Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData} />} /> 
           <Route exact path="/akasubgreddits" element={<AkaSubGreddit Loginval={isLoggedin} Loginfunc={setLogin} userData={userData} setUserData={setUserData} />} />

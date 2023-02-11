@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 
-const Form1 = (props) => {
+const LoginReg = (props) => {
   const [newUser, setUser] = useState(0);
   const [inpError, setError] = useState(0);
   const [LoginDisabled, setLoginDisabled] = useState(1);
@@ -176,4 +176,4 @@ const Form1 = (props) => {
   );
 };
 
-export default Form1;
+export default LoginReg;

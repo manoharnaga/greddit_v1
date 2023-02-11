@@ -95,7 +95,7 @@ const SavedPost = (props) => {
     if (CommentDisabled && UpdatePost.comment!=="-1") return;
     console.log("UpdatePost");
 
-    fetch(`http://localhost:7000/akasubgreddits/updatepost`, {
+    fetch(`http://localhost:7000/savedpost/updatepost`, {
       method: "PUT",
       crossDomain: true,
       body: JSON.stringify(UpdatePost),
@@ -108,7 +108,7 @@ const SavedPost = (props) => {
       .then((res) => res.json())
       .then((data) => {
         console.log("post reached server!",data);
-        if(data.status === "Post Updated Successfully!"){
+        if(data.status === "Updated Saved Post Successfully!"){
           const AkaSubgreddits = data.AkaSubgreddits;
           setAkaSubGreddits(AkaSubgreddits);
         }

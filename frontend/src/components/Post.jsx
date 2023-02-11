@@ -18,6 +18,7 @@ import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
+import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
 
 const style = {
     position: 'absolute',
@@ -42,22 +43,18 @@ const Post = (props) => {
   const [PostDisabled, setPostDisabled] = useState(true);
   const [Text, setText] = useState('');
 
-  // const [UpdatePost, setUpdatePost] = useState();
-
   const [CommentDisabled, setCommentDisabled] = useState(true);
   const [Comment, setComment] = useState('');
-  // const [Post, setPost] = useState({
-  //   postedBy: "emptyq",
-  //   Text: "qwerty",
-  //   upvotes: 3,
-  //   downvotes: 5,
-  //   comments: ["onec"]
-  // });
 
+  const [ReportDisabled, setReportDisabled] = useState(true);
+  const [concernText, setConcernText] = useState('');
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [openReport, setOpenReport] = useState(false);
+  const handleOpenReport = () => setOpenReport(true)
+  const handleCloseReport = () => setOpenReport(false);
 
   // localStorage.setItem('subgredditdata',JSON.stringify(SubGredditData));
   // console.log(location.pathname.substring(location.pathname.lastIndexOf('/') + 1));
@@ -99,14 +96,19 @@ const Post = (props) => {
 
   },[location.pathname]);
   
-  const handlePostTextChange = (e) => {
-    setText(e.target.value);
-    setPostDisabled(!(e.target.value.length > 0));
+  const handlePostConcernChange = (e) => {
+    setConcernText(e.target.value);
+    setReportDisabled(!(e.target.value.length > 0));
   };
 
   const handlePostCommentChange = (e) => {
     setComment(e.target.value);
     setCommentDisabled(!(e.target.value.length > 0));
+  };
+
+  const handlePostTextChange = (e) => {
+    setText(e.target.value);
+    setPostDisabled(!(e.target.value.length > 0));
   };
 
   const handleSubGreddit = (e) => {
@@ -138,6 +140,39 @@ const Post = (props) => {
       .catch((error) => console.error("Error:", error));
   };
 
+
+  const handleSubGredditReport = async (postobj_id,postid,reportedVictim, Text) => {
+    if (ReportDisabled) return;
+
+    await fetch(`http://localhost:7000/akasubgreddits/reportpost`, {
+      method: "PUT",
+      crossDomain: true,
+      body: JSON.stringify({
+        postobj_id: postobj_id,
+        postedIn: SubGredditData._id,
+        postid: postid,
+        reportedBy: props.userData.username,
+        reportedVictim: reportedVictim,
+        concern: concernText,
+        Text: Text
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Report reached server!",data);
+        if(data.status === "Report Sent Successfully!"){
+          setSubGredditData(data.SubgredditData);
+        }
+      })
+      .catch((error) => console.error("Error:", error));
+  };
+
+
   const handleSavedPost = async (SavedPost) => {
     await fetch(`http://localhost:7000/savedpost/add`, {
       method: "PUT",
@@ -154,6 +189,7 @@ const Post = (props) => {
       console.log("savedpost reached server!",data);
       if(data.status === "Saved Post Successfully!"){
         setSubGredditData(data.SubgredditData);
+        
       }
     })
     .catch(error => console.error('Error:', error));
@@ -207,9 +243,10 @@ const Post = (props) => {
     .catch(error => {
         console.error('Error:', error);
     });
-}
+  }
 
-  const card = (id,postedBy,Text,upvotes,downvotes,comments) => {
+  
+  const card = (postobj_id,id,postedBy,Text,upvotes,downvotes,comments) => {
     return (
       <React.Fragment>
         <CardHeader
@@ -313,6 +350,39 @@ const Post = (props) => {
           {downvotes?.length}
           </Typography>
         </IconButton>
+
+
+        <div className="ReportPost">
+        <IconButton onClick={handleOpenReport} aria-label="no. of people">
+          <ReportProblemOutlinedIcon /> 
+          {/* : <ThumbDownOutlinedIcon /> */}
+        </IconButton>
+          <Modal
+            open={openReport}
+            onClose={handleCloseReport}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+          <Box
+            component="form"
+            sx={style}
+            noValidate
+            autoComplete="off"
+            textAlign="center"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubGredditReport(postobj_id,id,postedBy,Text);
+            }}
+            className="mysubgreddit-inputform"
+          >
+            <TextField id="outlined-basic" name="Text" label="concern.." onChange={handlePostConcernChange} variant="outlined" multiline
+            rows={3}/>
+            <Button type="submit" variant="contained" disabled={ReportDisabled}>Submit</Button>
+          </Box>
+        </Modal>
+        </div>
+
+
         {
           SubGredditData.post[id].savedby.includes(props.userData.username) ?
           <Button disabled>SAVED</Button> 
@@ -366,7 +436,7 @@ const Post = (props) => {
       <h1>Posts Page</h1>
       {SubGredditData?.post?.map((postobj) => (
         <Box key={postobj.id} sx={{ minWidth: 275}}>
-          <Card variant="outlined">{card(postobj.id,postobj.postedBy,postobj.Text,postobj.upvotes,postobj.downvotes,postobj.comments)}</Card>
+          <Card variant="outlined">{card(postobj._id,postobj.id,postobj.postedBy,postobj.Text,postobj.upvotes,postobj.downvotes,postobj.comments)}</Card>
         </Box>
     ))}
   </div>

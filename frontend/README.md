@@ -27,6 +27,7 @@
 - username is used to identify users in 'Followers/Following'
 - both Followers/Following won't be shown at once - only one of two will be displayed
 - SubGredditMod -- Moderator of MySubgredditsPage
+- Aka Subgreddits - All Subgreddits
 - we store upvotes as list of id's/usernames of users who upvoted/downvoted
 
 
