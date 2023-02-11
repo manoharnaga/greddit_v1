@@ -10,7 +10,7 @@ import AkaSubGreddit from "./AkaSubgreddiit";
 import Post from "./Post";
 
 import * as React from 'react';
-import { Toolbar } from "@mui/material";
+// import { Toolbar } from "@mui/material";
 import SavedPost from "./SavedPost";
 import EditProfile from "./EditProfile";
 

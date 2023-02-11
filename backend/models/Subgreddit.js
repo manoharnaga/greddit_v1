@@ -27,6 +27,10 @@ let Report = new SchemaReport(
     Text: {
       type: String,
       required: true,
+    },
+    CreateTimeInms: {
+      type: Number,
+      required: true 
     }
   }
 );

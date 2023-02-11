@@ -61,7 +61,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const AkaSubGreddit = (props) => {
 
   const [AkaSubGreddits,setAkaSubGreddits] = useState();
-  
+  const [SortObj, setSortObj] = useState({isSorted: false});
+  const [searchBarValue, setSearchBarValue] = useState("");
+  const [searchAkaSubGreddits,setSearchAkaSubGreddits] = useState();
+
   let navigate = useNavigate();
   let location = useLocation();
   useEffect(() => {
@@ -95,6 +98,22 @@ const AkaSubGreddit = (props) => {
       SubgredditObj();
     }
   }, [location.pathname]);
+
+
+  // const searchBarFunc = () => {
+  //   const filteredData = AkaSubGreddits.filter((subgreddit) =>
+  //     subgreddit.name.toLowerCase().includes(searchBarValue.toLowerCase())
+  //   )
+  // };
+
+  // useEffect(() => {
+  //   if(searchBarValue === 0){
+  //     searchBarFunc();
+  //   }
+  // }, [searchBarValue]);
+
+ 
+  
 
   if (props.Loginval === "false") {
     return <Navigate to="/login" />;
@@ -132,7 +151,11 @@ const AkaSubGreddit = (props) => {
       .catch((error) => console.error("Error:", error));
   }
 
-  
+  const handleSearchBarChange = (e) => {
+    setSearchBarValue(e.target.value);
+  }
+
+
   const card = (moderator,name,description,postlength,joinedlength,_id,isJoined) => {
     return (
     <React.Fragment>
@@ -196,22 +219,86 @@ const AkaSubGreddit = (props) => {
       </SearchIconWrapper>
       <StyledInputBase
         placeholder="Search…"
+        value={searchBarValue}
+        onChange={handleSearchBarChange}
         inputProps={{ 'aria-label': 'search' }}
       />
     </Search>
-    {AkaSubGreddits?.map((subgreddit,index) => (
-      subgreddit.joined.includes(props.userData.username) ?
-          <Box key={index} sx={{ minWidth: 275}}>
-            <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,true)}</Card>
-          </Box> : null
-    ))}
+    <h2>Sort By</h2>
 
-    {AkaSubGreddits?.map((subgreddit,index) => (
-      !subgreddit.joined.includes(props.userData.username) ?
-          <Box key={index} sx={{ minWidth: 275}}>
-            <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,false)}</Card>
-          </Box> : null
-    ))}
+
+    <Button onClick={() => {
+      const data = AkaSubGreddits.sort((suba,subb) => (suba.name > subb.name) ? 1 : -1);
+      setAkaSubGreddits(data);
+      setSortObj({
+        isSorted: true
+      })
+    }}
+    >Name : Ascending</Button>
+
+    <Button onClick={() => {
+      const data = AkaSubGreddits?.sort((suba,subb) => (suba?.name < subb?.name) ? 1 : -1);
+      setAkaSubGreddits(data);
+      setSortObj({
+        isSorted: true
+      })
+    }}
+    >Name : Descending</Button>
+
+    <Button onClick={() => {
+      const data = AkaSubGreddits?.sort((suba,subb) => (suba?.joined?.length < subb?.joined?.length) ? 1 : -1);
+      setAkaSubGreddits(data);
+      setSortObj({
+        isSorted: true
+      })
+    }}
+    // Descending
+    >Followers</Button>
+
+    <Button onClick={() => {
+      const data = AkaSubGreddits?.sort((suba,subb) => (suba?.createdAt > subb?.createdAt) ? 1 : -1);
+      setAkaSubGreddits(data);
+      setSortObj({
+        isSorted: true
+      })
+    }}
+    // newest first
+    >Creation Date</Button>
+
+    <Button onClick={() => {
+      setSortObj({
+        isSorted: false
+      })
+    }}
+    >Remove Sort</Button>
+    {
+      SortObj?.isSorted ?
+      AkaSubGreddits?.map((subgreddit,index) => (
+        <Box key={index} sx={{ minWidth: 275}}>
+          <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,
+            subgreddit._id,subgreddit?.joined?.includes(props.userData.username))}</Card>
+        </Box>
+      )) : null
+    }
+
+    {
+      !(SortObj?.isSorted) ?
+      AkaSubGreddits?.map((subgreddit,index) => (
+        subgreddit?.joined?.includes(props.userData.username) ?
+            <Box key={index} sx={{ minWidth: 275}}>
+              <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,true)}</Card>
+            </Box> : null
+      )) : null
+    }
+    {
+      !(SortObj?.isSorted) ?
+      AkaSubGreddits?.map((subgreddit,index) => (
+        !subgreddit?.joined?.includes(props.userData.username) ?
+            <Box key={index} sx={{ minWidth: 275}}>
+              <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,false)}</Card>
+            </Box> : null
+      )): null
+    }
   </div>
   );
 }

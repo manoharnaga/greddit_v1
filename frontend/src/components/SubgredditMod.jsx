@@ -53,6 +53,8 @@ const SubGredditMod = (props) => {
       localStorage.setItem('modsubgredditId',location.pathname.substring(location.pathname.lastIndexOf('/') + 1));
     });
     const [ignoreReport,setIgnoreReport] = useState(false);
+    const [blockSeconds, setBlockSeconds] = useState(3);
+    const [blockData, setBlockData] = useState({});
 
     const [value, setValue] = useState(0);
 
@@ -90,6 +92,23 @@ const SubGredditMod = (props) => {
 
     },[location.pathname]);
     
+
+    useEffect(() => {
+      let interval = null;
+      if (blockData.isBlockActive && blockSeconds>0) {
+        interval = setInterval(() => {
+          setBlockSeconds(seconds => seconds - 1);
+        }, 1000);
+      } else if (!blockData.isBlockActive || blockSeconds === 0) {
+        clearInterval(interval);
+        if(blockSeconds === 0){
+          blockReportedUser(blockData);
+        }
+      }
+      return () => clearInterval(interval);
+    }, [blockData, blockSeconds]);
+
+
     const handleRequest = async (username,flagRequest) => {
       await fetch(`http://localhost:7000/mysubgredditsmod/request`, {
         method: 'PUT',
@@ -147,8 +166,76 @@ const SubGredditMod = (props) => {
       .catch((error) => console.error("Error:", error));
     };
 
+
+    const blockTimer = (subid,reportedVictim,reportobj_id) => {
+      setBlockSeconds(3);
+      setBlockData({
+        isBlockActive: true,
+        subid:subid,
+        reportedVictim:reportedVictim,
+        reportobj_id: reportobj_id
+      })
+    };
+
+    const blockReportedUser = (blockDataObj) => {
+      fetch(`http://localhost:7000/mysubgredditsmod/blockuser`, {
+        method: "PUT",
+        crossDomain: true,
+        body: JSON.stringify({
+          subid: blockDataObj.subid,
+          reportedVictim: blockDataObj.reportedVictim
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        if(data.status === "reportedUser block Successfull!"){
+          console.log("reportedUser block Successfull...",data);
+          const updatedSubGreddit = data.SubgredditData;
+          setBlockData({isBlockActive: false});
+          setSubGredditData(updatedSubGreddit);
+        }
+        else{
+          console.log("Error blocking reported user - frontend!");
+        }
+    })
+      .catch((error) => console.error("Error:", error));
+    };
+
     const handleChange = (event, newValue) => {
+      if(newValue === 3){
+        delTimedOutReports();
+      }
       setValue(newValue);
+    };
+
+    const delTimedOutReports = () => {
+      fetch(`http://localhost:7000/mysubgredditsmod/deltimedoutreports`, {
+        method: "PUT",
+        crossDomain: true,
+        body: JSON.stringify({subid:SubGredditData?._id}),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("deleteTimedOutReports",data);
+        if(data.status === "deleteTimedOutReports Successfull!"){
+          const updatedSubGreddit = data.SubgredditData;
+          setSubGredditData(updatedSubGreddit);
+        }
+        else{
+          console.log("Error deleting timed out reports!");
+        }
+    })
+      .catch((error) => console.error("Error:", error));
     };
 
     const card = (postid,postobj_id,reportobj_id,reportedBy,reportedVictim,concern,Text) => {
@@ -209,9 +296,19 @@ const SubGredditMod = (props) => {
           </table>
         </CardContent>
         <CardActions>
-          <Button size="small" onClick={() => {
-            // blockReportedUser();
-          }} disabled={ignoreReport}>BLOCK</Button>
+          {SubGredditData.blocked.includes(reportedVictim) ?
+            <Button size="small" disabled>BLOCKED</Button> 
+            : 
+            (blockData.isBlockActive && blockData.reportobj_id===reportobj_id) ? 
+              <Button size="small" onClick={() => {
+                setBlockData({isBlockActive: false});
+                // blockReportedUser(SubGredditData?._id,reportedVictim);
+              }} disabled={ignoreReport}>CANCEL IN {blockSeconds}</Button> 
+              : 
+              <Button size="small" onClick={() => {
+                blockTimer(SubGredditData?._id,reportedVictim,reportobj_id);
+              }} disabled={ignoreReport}>BLOCK</Button>
+          }
           <Button size="small" onClick={() => {
             DeletePostReport(SubGredditData?._id,postid,postobj_id,reportobj_id);
           }} disabled={ignoreReport}>DELETE POST</Button>

@@ -141,7 +141,7 @@ const Post = (props) => {
   };
 
 
-  const handleSubGredditReport = async (postobj_id,postid,reportedVictim, Text) => {
+  const handleSubGredditReport = async (postobj_id,postid,reportedVictim, Text, TimeInms) => {
     if (ReportDisabled) return;
 
     await fetch(`http://localhost:7000/akasubgreddits/reportpost`, {
@@ -154,7 +154,8 @@ const Post = (props) => {
         reportedBy: props.userData.username,
         reportedVictim: reportedVictim,
         concern: concernText,
-        Text: Text
+        Text: Text,
+        CreateTimeInms: TimeInms
       }),
       headers: {
         "Content-Type": "application/json",
@@ -371,7 +372,10 @@ const Post = (props) => {
             textAlign="center"
             onSubmit={(e) => {
               e.preventDefault();
-              handleSubGredditReport(postobj_id,id,postedBy,Text);
+              console.log("frontend!",postedBy);
+              let d = new Date();
+              let TimeInms = d.getTime();
+              handleSubGredditReport(postobj_id,id,postedBy,Text,TimeInms);
             }}
             className="mysubgreddit-inputform"
           >

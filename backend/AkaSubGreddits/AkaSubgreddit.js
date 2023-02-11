@@ -124,7 +124,8 @@ router.put("/reportpost", async (req, res) => {
     reportedBy,
     reportedVictim,
     concern,
-    Text } = req.body;
+    Text,
+    CreateTimeInms } = req.body;
   const AkaSubgreddit = await Subgreddit.findOne({ _id: postedIn });
   // check if any Subgreddit exists -- empty fields are also handled
   if (!AkaSubgreddit) {
@@ -138,16 +139,17 @@ router.put("/reportpost", async (req, res) => {
       reportedBy: reportedBy,
       reportedVictim: reportedVictim,
       concern: concern,
-      Text: Text
+      Text: Text,
+      CreateTimeInms: CreateTimeInms
     })
 
     // console.log("ds",AkaSubgreddit.post[postid]);
-    console.log("From Backend Report!", AkaSubgreddit);
+    console.log("From Backend Reportxyz!", AkaSubgreddit.post[postid]);
 
     await AkaSubgreddit.save()
       .then((data) =>
         res.json({
-          status: "Post Created Successfully!",
+          status: "Report Sent Successfully!",
           SubgredditData: data
         })
       )

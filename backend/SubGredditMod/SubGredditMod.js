@@ -82,4 +82,76 @@ router.put("/delpost", async (req, res) => {
   }
 });
 
+
+
+router.put("/blockuser", async (req, res) => {
+  const { subid, reportedVictim } = req.body;
+  const MySubgredditMod = await Subgreddit.findOne({ _id: subid });
+  // check if any Subgreddit exists -- empty fields are also handled
+  if (!MySubgredditMod) {
+    return res.json({ status: "No Subgreddits found!", subid });
+  }
+  try {
+    
+
+    if(MySubgredditMod.joined.includes(reportedVictim)){
+      MySubgredditMod.joined = MySubgredditMod.joined.filter((joinedUser) => {
+        return joinedUser !== reportedVictim;
+      })
+    }
+
+    if(!MySubgredditMod.blocked.includes(reportedVictim)){
+      MySubgredditMod.blocked.push(reportedVictim);
+    }
+
+    await MySubgredditMod.save()
+      .then((data) =>
+        res.json({
+          status: "reportedUser block Successfull!",
+          SubgredditData: data,
+        })
+      )
+      .catch((error) => console.error("Error:", error));
+  } catch (error) {
+    res.status(500).send({ status: "Error blocking reported User!" });
+  }
+});
+
+
+router.put("/deltimedoutreports", async (req, res) => {
+  const { subid } = req.body;
+  const MySubgredditMod = await Subgreddit.findOne({ _id: subid });
+  // check if any Subgreddit exists -- empty fields are also handled
+  if (!MySubgredditMod) {
+    return res.json({ status: "No Subgreddits found!", subid });
+  }
+  try {
+    const TimedOut = 100000; // 100 seconds
+
+    for (const postobj in MySubgredditMod.post)
+    {
+      for (const reportobj in this.postobj.report)
+      {
+        if(reportobj.CreateTimeInms >= TimedOut){
+          MySubgredditMod.post[postobj.id].report 
+          = MySubgredditMod.post[postobj.id].report.filter((reportobj2) => {
+            return reportobj2._id !== reportobj._id
+          })
+        }
+      }
+    }
+
+    await MySubgredditMod.save()
+      .then((data) =>
+        res.json({
+          status: "deleteTimedOutReports Successfull!",
+          SubgredditData: data,
+        })
+      )
+      .catch((error) => console.error("Error:", error));
+  } catch (error) {
+    res.status(500).send({ status: "Error deleting timedout reports!" });
+  }
+});
+
 module.exports = router;
