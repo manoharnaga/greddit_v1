@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -71,10 +71,11 @@ const AkaSubGreddit = (props) => {
   const [AkaSubGreddits,setAkaSubGreddits] = useState();
   const [SortObj, setSortObj] = useState({isSorted: false});
   const [searchBarValue, setSearchBarValue] = useState("");
-  const [searchAkaSubGreddits,setSearchAkaSubGreddits] = useState();
-  const [filterTags, setFilterTags] = useState([]);
+  // const [searchAkaSubGreddits,setSearchAkaSubGreddits] = useState();
+  // const [filterTags, setFilterTags] = useState([]);
   const [isSearch, setIsSearch] = useState(false);
   const [tags, setTags] = useState([]);
+  // const [subNames, setSubNames] = useState([]);
   const [checked, setChecked] = useState([]);
 
 
@@ -99,6 +100,7 @@ const AkaSubGreddit = (props) => {
             const AkaSubgreddits = data.AkaSubgreddits;
             setAkaSubGreddits(AkaSubgreddits);
             setTags(data.Tags);
+            // setSubNames(data.subnames);
             // console.log("erw",data.Tags);
           } else {
             console.log(
@@ -167,6 +169,7 @@ const AkaSubGreddit = (props) => {
 
   const handleSearchBarChange = (e) => {
     setSearchBarValue(e.target.value);
+    setIsSearch((e.target.value.length > 0));
   }
 
   const handleToggle = (value) => () => {
@@ -334,54 +337,60 @@ const AkaSubGreddit = (props) => {
     </List>
 
     {
-      (checked?.length > 0) ?
+      isSearch &&
       AkaSubGreddits?.map((subgreddit,index) => (
-        checked.some(tag => subgreddit?.tags?.includes(tag)) ?
+        subgreddit.name.toLowerCase().includes(searchBarValue.toLowerCase()) &&
         <Box key={index} sx={{ minWidth: 275}}>
           <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,
             subgreddit._id,subgreddit.tags,subgreddit.bannedKeywords,subgreddit?.joined?.includes(props.userData.username))}</Card>
-        </Box> : null
-      )) : null
+        </Box>
+      ))
+    }
+    {
+      (checked?.length > 0) &&
+      AkaSubGreddits?.map((subgreddit,index) => (
+        checked.some(tag => subgreddit?.tags?.includes(tag)) &&
+        <Box key={index} sx={{ minWidth: 275}}>
+          <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,
+            subgreddit._id,subgreddit.tags,subgreddit.bannedKeywords,subgreddit?.joined?.includes(props.userData.username))}</Card>
+        </Box>
+      ))
     }
 
-    { !(checked?.length > 0) ?
-    <div>
-      {
-        SortObj?.isSorted ?
-        AkaSubGreddits?.map((subgreddit,index) => (
-          <Box key={index} sx={{ minWidth: 275}}>
-            <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,
-              subgreddit._id,subgreddit.tags,subgreddit.bannedKeywords,subgreddit?.joined?.includes(props.userData.username))}</Card>
-          </Box>
-        )) : null
-      }
-
-      { 
-        !(SortObj?.isSorted) ?
-        <div>
+    { !(checked?.length > 0 || isSearch) &&
+      <div>
         {
+          SortObj?.isSorted &&
           AkaSubGreddits?.map((subgreddit,index) => (
-            subgreddit?.joined?.includes(props.userData.username) ?
-                <Box key={index} sx={{ minWidth: 275}}>
-                  <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,subgreddit.tags,subgreddit.bannedKeywords,true)}</Card>
-                </Box> : null
-          )) 
-        }
-        {
-          AkaSubGreddits?.map((subgreddit,index) => (
-            !subgreddit?.joined?.includes(props.userData.username) ?
-                <Box key={index} sx={{ minWidth: 275}}>
-                  <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,subgreddit.tags,subgreddit.bannedKeywords,false)}</Card>
-                </Box> : null
+            <Box key={index} sx={{ minWidth: 275}}>
+              <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,
+                subgreddit._id,subgreddit.tags,subgreddit.bannedKeywords,subgreddit?.joined?.includes(props.userData.username))}</Card>
+            </Box>
           ))
         }
-        </div>
-        : 
-        null
-      }
+
+        { 
+          !(SortObj?.isSorted) &&
+          <div>
+          {
+            AkaSubGreddits?.map((subgreddit,index) => (
+              subgreddit?.joined?.includes(props.userData.username) &&
+                  <Box key={index} sx={{ minWidth: 275}}>
+                    <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,subgreddit.tags,subgreddit.bannedKeywords,true)}</Card>
+                  </Box>
+            )) 
+          }
+          {
+            AkaSubGreddits?.map((subgreddit,index) => (
+              !subgreddit?.joined?.includes(props.userData.username) &&
+                  <Box key={index} sx={{ minWidth: 275}}>
+                    <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,subgreddit.tags,subgreddit.bannedKeywords,false)}</Card>
+                  </Box>
+            ))
+          }
+          </div>
+        }
       </div>
-      :
-      null
     }
   </div>
   );

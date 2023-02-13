@@ -117,6 +117,27 @@ const Post = (props) => {
   const handleSubGreddit = (e) => {
     e.preventDefault();
     if (PostDisabled) return;
+    const banTextArr = Text.split(" ");
+    let isBannedWord = 0
+    const newTextArr = banTextArr.map((word) => {
+      return (
+        SubGredditData?.bannedKeywords?.map((banword) => {
+            if(banword?.toLowerCase()?.includes(word.toLowerCase())){
+              isBannedWord = 1;
+              return "*";
+            }
+            else{
+              return word;
+            }
+        })
+      );
+    })
+    
+    if(isBannedWord){
+      alert("You are using Banned KeyWords of the Subgreddit!");
+    }
+
+    const finalText = newTextArr.join(" ");
 
     fetch(`http://localhost:7000/akasubgreddits/addpost`, {
       method: "PUT",
@@ -124,7 +145,7 @@ const Post = (props) => {
       body: JSON.stringify({
         postedBy: props.userData.username,
         postedIn: SubGredditData._id,
-        Text: Text,
+        Text: finalText,
       }),
       headers: {
         "Content-Type": "application/json",
