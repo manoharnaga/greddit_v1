@@ -17,6 +17,14 @@ import PeopleIcon from '@mui/icons-material/People';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListSubheader from '@mui/material/ListSubheader';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Checkbox from '@mui/material/Checkbox';
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -64,9 +72,13 @@ const AkaSubGreddit = (props) => {
   const [SortObj, setSortObj] = useState({isSorted: false});
   const [searchBarValue, setSearchBarValue] = useState("");
   const [searchAkaSubGreddits,setSearchAkaSubGreddits] = useState();
+  const [filterTags, setFilterTags] = useState([]);
+  const [isSearch, setIsSearch] = useState(false);
+  const [tags, setTags] = useState([]);
+  const [checked, setChecked] = useState([]);
+
 
   let navigate = useNavigate();
-  let location = useLocation();
   useEffect(() => {
     // function to be called on page load/refresh
     const SubgredditObj = () => {
@@ -86,6 +98,8 @@ const AkaSubGreddit = (props) => {
           if (data.status === "AKAsubgredditUsers sent") {
             const AkaSubgreddits = data.AkaSubgreddits;
             setAkaSubGreddits(AkaSubgreddits);
+            setTags(data.Tags);
+            // console.log("erw",data.Tags);
           } else {
             console.log(
               "Unable to fetch AkaSubgreddit Data! - AkaSubgreddit.jsx"
@@ -97,7 +111,7 @@ const AkaSubGreddit = (props) => {
     if (JSON.parse(localStorage.getItem("login-key")) === "true") {
       SubgredditObj();
     }
-  }, [location.pathname]);
+  }, []);
 
 
   // const searchBarFunc = () => {
@@ -120,9 +134,9 @@ const AkaSubGreddit = (props) => {
   }
 
   const OpenSubGreddit  = (_id) => {
-    console.log("Akasubgreddit in New Page!",_id);
-    localStorage.setItem('akasubgredditId', _id);
-    navigate(`/akasubgreddits/${_id}`,{state:{id:_id}});
+    // console.log("Akasubgreddit in New Page!",_id);
+    // localStorage.setItem('akasubgredditId', _id);
+    navigate(`/akasubgreddits/${_id}`);
   };
 
   const joinOrLeaveSubGreddit = (subgredditId,isJoinOrLeave) => {
@@ -155,8 +169,19 @@ const AkaSubGreddit = (props) => {
     setSearchBarValue(e.target.value);
   }
 
+  const handleToggle = (value) => () => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
 
-  const card = (moderator,name,description,postlength,joinedlength,_id,isJoined) => {
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+    setChecked(newChecked);
+  };
+
+  const card = (moderator,name,description,postlength,joinedlength,_id,tags,bannedKeywords,isJoined) => {
     return (
     <React.Fragment>
       <CardHeader
@@ -187,6 +212,17 @@ const AkaSubGreddit = (props) => {
         <Typography variant="body1">
         {description}
         </Typography>
+        {tags.map((tag,index) => (
+          <Typography style={{color:'blue',fontWeight:'bold'}} key={index} variant="body2" display="inline">
+            #{tag} ,
+          </Typography>
+        ))}
+        <br />
+        {bannedKeywords.map((tag,index) => (
+          <Typography style={{color:'darkblue',fontWeight:'bold'}} key={index} variant="body2" display="inline">
+            #{tag} ,
+          </Typography>
+        ))}
       </CardContent>
       <CardActions>
         <IconButton aria-label="no. of posts">
@@ -224,9 +260,8 @@ const AkaSubGreddit = (props) => {
         inputProps={{ 'aria-label': 'search' }}
       />
     </Search>
+
     <h2>Sort By</h2>
-
-
     <Button onClick={() => {
       const data = AkaSubGreddits.sort((suba,subb) => (suba.name > subb.name) ? 1 : -1);
       setAkaSubGreddits(data);
@@ -271,33 +306,82 @@ const AkaSubGreddit = (props) => {
       })
     }}
     >Remove Sort</Button>
+
+    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+    <ListSubheader>filterByTags</ListSubheader>
+      {tags.map((value) => {
+        const labelId = `checkbox-list-label-${value}`;
+        return (
+          <ListItem
+            key={value}
+            disablePadding
+          >
+          <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+            <ListItemIcon>
+              <Checkbox
+                edge="start"
+                checked={checked.indexOf(value) !== -1}
+                tabIndex={-1}
+                disableRipple
+                inputProps={{ 'aria-labelledby': labelId }}
+              />
+            </ListItemIcon>
+            <ListItemText id={labelId} primary={`${value}`} />
+          </ListItemButton>
+        </ListItem>
+        );
+      })}
+    </List>
+
     {
-      SortObj?.isSorted ?
+      (checked?.length > 0) ?
       AkaSubGreddits?.map((subgreddit,index) => (
+        checked.some(tag => subgreddit?.tags?.includes(tag)) ?
         <Box key={index} sx={{ minWidth: 275}}>
           <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,
-            subgreddit._id,subgreddit?.joined?.includes(props.userData.username))}</Card>
-        </Box>
+            subgreddit._id,subgreddit.tags,subgreddit.bannedKeywords,subgreddit?.joined?.includes(props.userData.username))}</Card>
+        </Box> : null
       )) : null
     }
 
-    {
-      !(SortObj?.isSorted) ?
-      AkaSubGreddits?.map((subgreddit,index) => (
-        subgreddit?.joined?.includes(props.userData.username) ?
-            <Box key={index} sx={{ minWidth: 275}}>
-              <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,true)}</Card>
-            </Box> : null
-      )) : null
-    }
-    {
-      !(SortObj?.isSorted) ?
-      AkaSubGreddits?.map((subgreddit,index) => (
-        !subgreddit?.joined?.includes(props.userData.username) ?
-            <Box key={index} sx={{ minWidth: 275}}>
-              <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,false)}</Card>
-            </Box> : null
-      )): null
+    { !(checked?.length > 0) ?
+    <div>
+      {
+        SortObj?.isSorted ?
+        AkaSubGreddits?.map((subgreddit,index) => (
+          <Box key={index} sx={{ minWidth: 275}}>
+            <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,
+              subgreddit._id,subgreddit.tags,subgreddit.bannedKeywords,subgreddit?.joined?.includes(props.userData.username))}</Card>
+          </Box>
+        )) : null
+      }
+
+      { 
+        !(SortObj?.isSorted) ?
+        <div>
+        {
+          AkaSubGreddits?.map((subgreddit,index) => (
+            subgreddit?.joined?.includes(props.userData.username) ?
+                <Box key={index} sx={{ minWidth: 275}}>
+                  <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,subgreddit.tags,subgreddit.bannedKeywords,true)}</Card>
+                </Box> : null
+          )) 
+        }
+        {
+          AkaSubGreddits?.map((subgreddit,index) => (
+            !subgreddit?.joined?.includes(props.userData.username) ?
+                <Box key={index} sx={{ minWidth: 275}}>
+                  <Card variant="outlined">{card(subgreddit.moderator,subgreddit.name,subgreddit.description,subgreddit.post.length,subgreddit.joined.length,subgreddit._id,subgreddit.tags,subgreddit.bannedKeywords,false)}</Card>
+                </Box> : null
+          ))
+        }
+        </div>
+        : 
+        null
+      }
+      </div>
+      :
+      null
     }
   </div>
   );

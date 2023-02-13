@@ -24,7 +24,6 @@ const SavedPost = (props) => {
 
   const [CommentDisabled, setCommentDisabled] = useState(true);
   const [Comment, setComment] = useState('');
-  let location = useLocation();
   useEffect(() => {
     // function to be called on page load/refresh
     const SubgredditObj = () => {
@@ -55,7 +54,7 @@ const SavedPost = (props) => {
     if (JSON.parse(localStorage.getItem("login-key")) === "true") {
       SubgredditObj();
     }
-  }, [location.pathname]);
+  }, []);
 
   if (props.Loginval === "false") {
     return <Navigate to="/login" />;

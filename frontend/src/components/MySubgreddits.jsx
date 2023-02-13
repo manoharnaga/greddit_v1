@@ -34,7 +34,6 @@ const MySubGreddits = (props) => {
   const [MySubGreddits,setMySubGreddits] = useState();
   let navigate = useNavigate();
 
-  let location = useLocation();
   useEffect(() => {
     // function to be called on page load/refresh
     const SubgredditObj = () => {
@@ -69,21 +68,20 @@ const MySubGreddits = (props) => {
     if (JSON.parse(localStorage.getItem("login-key")) === "true") {
       SubgredditObj();
     }
-  }, [location.pathname]);
+  }, []);
 
   if (props.Loginval === "false") {
     return <Navigate to="/login" />;
   }
 
   const addTags = (e) => {
-    if (e.key === "Enter" && e.target.value !== "") {
+    if (e.key === " " && e.target.value !== "") {
       // Single word && LowerCase
-      if (e.target.value.search(" ") !== -1) {
-        alert("Tags should be Single Word!");
-      } else if (/[A-Z]/.test(e.target.value)) {
+      // alert("Tags should be Single Word!"); // Handled directly as SPACE ADDS A NEW TAG
+      if (/[A-Z]/.test(e.target.value.trim())) {
         alert("Please use Lowercase in Tags!");
       } else {
-        setTags([...tags, e.target.value]);
+        setTags([...tags, e.target.value.trim()]);
       }
       e.target.value = "";
     }
@@ -94,13 +92,10 @@ const MySubGreddits = (props) => {
   };
 
   const addBannedKeyword = (e) => {
-    if (e.key === "Enter" && e.target.value !== "") {
-      // Single Word
-      if (e.target.value.search(" ") !== -1) {
-        alert("BannedKeywords should be Single Word!");
-      } else {
-        setBannedKeywords([...bannedKeywords, e.target.value]);
-      }
+    if (e.key === " " && e.target.value !== "") {
+      // Single word - Handled directly as SPACE ADDS A NEW TAG
+      // alert("BannedKeywords should be Single Word!"); 
+      setBannedKeywords([...bannedKeywords, e.target.value.trim()]);
       e.target.value = "";
     }
   };
@@ -173,9 +168,9 @@ const MySubGreddits = (props) => {
 
 
   const OpenSubGreddit  = (_id) => {
-    console.log("Mysubgreddit in New Page!",_id);
-    localStorage.setItem('modsubgredditId', _id);
-    navigate(`/mysubgreddits/${_id}`,{state:{id:_id}});
+    // console.log("Mysubgreddit in New Page!",_id);
+    // localStorage.setItem('modsubgredditId', _id);
+    navigate(`/mysubgreddits/${_id}`);
   };
 
 
@@ -191,12 +186,13 @@ const MySubGreddits = (props) => {
         {description}
         </Typography>
         {tags.map((tag,index) => (
-          <Typography key={index} variant="body2" display="inline">
+          <Typography style={{color:'blue',fontWeight:'bold'}} key={index} variant="body2" display="inline">
             #{tag} ,
           </Typography>
         ))}
+        <br />
         {bannedKeywords.map((tag,index) => (
-          <Typography key={index} variant="body2" display="inline">
+          <Typography style={{color:'darkblue',fontWeight:'bold'}} key={index} variant="body2" display="inline">
             #{tag} ,
           </Typography>
         ))}
@@ -255,7 +251,7 @@ const MySubGreddits = (props) => {
             className="input-tags"
             type="text"
             onKeyDown={(e) => addTags(e)}
-            placeholder="Press ENTER to add tags.."
+            placeholder="Press SPACE to add tags.."
             />
         </div>
         <div className="tags-input">
@@ -276,7 +272,7 @@ const MySubGreddits = (props) => {
             className="input-tags"
             type="text"
             onKeyDown={(e) => addBannedKeyword(e)}
-            placeholder="Press ENTER to add banned keywords.."
+            placeholder="Press SPACE to add banned keywords.."
             />
         </div>
         <Button type="submit" variant="contained" disabled={SubGredditDisabled}>Submit</Button>

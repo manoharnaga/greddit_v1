@@ -19,6 +19,8 @@ import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
 import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
+import Grid from '@mui/material/Grid';
+import backgroundImage from '../butterfly.jpg';
 
 const style = {
     position: 'absolute',
@@ -37,9 +39,10 @@ const style = {
 const Post = (props) => {
   let location = useLocation();
   const [SubGredditData, setSubGredditData] = useState(() => {
-    console.log('helox');
+    // console.log('helox');
     localStorage.setItem('akasubgredditId',location.pathname.substring(location.pathname.lastIndexOf('/') + 1));
   });
+  
   const [PostDisabled, setPostDisabled] = useState(true);
   const [Text, setText] = useState('');
 
@@ -94,7 +97,7 @@ const Post = (props) => {
     };
     getSubGredditData();
 
-  },[location.pathname]);
+  },[]);
   
   const handlePostConcernChange = (e) => {
     setConcernText(e.target.value);
@@ -411,11 +414,16 @@ const Post = (props) => {
 
   return (
   <div>
+      <h1>Posts Page</h1>
       <div>
-
-      </div>
-      <div>
-          <Button onClick={handleOpen}>CREATE POST</Button>
+          <Box sx={{
+            // position:'relative',
+            display:'flex',
+            alignItems:'center',
+            justifyContent:'center',
+            }}>
+            <Button variant="contained" onClick={handleOpen}>CREATE POST</Button>
+          </Box>
           <Modal
               open={open}
               onClose={handleClose}
@@ -437,12 +445,30 @@ const Post = (props) => {
             </Box>
           </Modal>
       </div>
-      <h1>Posts Page</h1>
-      {SubGredditData?.post?.map((postobj) => (
-        <Box key={postobj.id} sx={{ minWidth: 275}}>
-          <Card variant="outlined">{card(postobj._id,postobj.id,postobj.postedBy,postobj.Text,postobj.upvotes,postobj.downvotes,postobj.comments)}</Card>
-        </Box>
-    ))}
+      <Grid container my={2}>
+        <Grid xs={12} md={4}  sx={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          transition: 'background-image 1s ease-out, opacity 1s ease-out',
+          position:'fixed',
+          height:'15rem',
+          width:'15rem',
+        }}>
+          <h1 style={{opacity:1}}>{SubGredditData?.name}</h1>
+          <h2>{SubGredditData?.description}</h2>
+        </Grid>
+        <Grid xs={12} md={8} sx={{
+          margin:'15rem',
+        }}>
+        {SubGredditData?.post?.map((postobj) => (
+            <Box key={postobj.id} sx={{ minWidth: 275}}>
+              <Card variant="outlined">{card(postobj._id,postobj.id,postobj.postedBy,postobj.Text,postobj.upvotes,postobj.downvotes,postobj.comments)}</Card>
+            </Box>
+        ))}
+        </Grid>
+      </Grid>
+      
   </div>
   );
 }

@@ -49,9 +49,10 @@ function a11yProps(index) {
 const SubGredditMod = (props) => {
     let location = useLocation();
     const [SubGredditData, setSubGredditData] = useState(() => {
-      console.log('heloy');
+      // console.log('heloy');
       localStorage.setItem('modsubgredditId',location.pathname.substring(location.pathname.lastIndexOf('/') + 1));
     });
+    
     const [ignoreReport,setIgnoreReport] = useState(false);
     const [blockSeconds, setBlockSeconds] = useState(3);
     const [blockData, setBlockData] = useState({});
@@ -90,7 +91,7 @@ const SubGredditMod = (props) => {
       };
       getSubGredditData();
 
-    },[location.pathname]);
+    },[]);
     
 
     useEffect(() => {

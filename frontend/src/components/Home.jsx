@@ -67,10 +67,18 @@ const Home = (props) => {
               </a>
             </li>
             <li className="navbar-item">
+              <a className="nav-link" aria-current="page" href="/savedpost">
+                <Button>
+                <CollectionsIcon color="primary"/>
+                Saved Posts
+                </Button>
+              </a>
+            </li>
+            <li className="navbar-item">
               <a className="nav-link" aria-current="page" href="#logout">
                 <Button
                   type="submit"
-                  // color="grey"
+                  style={{ color: 'grey'}}
                   onClick={(event) => {
                     event.preventDefault();
                     props.Loginfunc("false");

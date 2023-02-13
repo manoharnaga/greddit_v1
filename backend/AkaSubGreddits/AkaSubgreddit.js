@@ -7,10 +7,21 @@ router.get("/dataall", async (req, res) => {
   if (!AkaSubgreddits) {
     return res.json({ status: "No Subgreddits found!" });
   }
+
   if (res.status(201)) {
+    // All Tags
+    let Tags = [];
+    AkaSubgreddits?.map((subgreddit) => (
+      subgreddit?.tags?.map((tag) => (
+        !(Tags.includes(tag)) ? Tags.push(tag):null
+      ))
+    ))
+    // console.log(Tags);
+    // All Tags
     return res.json({
       status: "AKAsubgredditUsers sent",
-      AkaSubgreddits,
+      AkaSubgreddits: AkaSubgreddits,
+      Tags: Tags
     });
   } else {
     return res.json({ status: "Error: Can't Send AkaSubbgreddits" });

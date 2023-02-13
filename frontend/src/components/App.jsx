@@ -30,7 +30,6 @@ const App = () => {
   }, [isLoggedin]);
   
   
-  let location = useLocation();
   useEffect(() => {
     // function to be called on page load/refresh
     const loginDatafunc = () => {
@@ -72,7 +71,8 @@ const App = () => {
     if(JSON.parse(localStorage.getItem("login-key")) === "true"){
       userObj();
     }
-  }, [location.pathname]);
+    
+  }, []);
 
   return (
       <div>
@@ -91,6 +91,7 @@ const App = () => {
             <li><Link to="/editprofile">EditProfile</Link></li>
             <li><Link to="/mysubgreddits">My Sub Greddiits</Link></li>
             <li><Link to="/akasubgreddits">AkaSubGreddiits</Link></li>
+            <li><Link to="/savedpost">SavedPosts</Link></li>
           </ul>
         </nav>
         <Routes>
