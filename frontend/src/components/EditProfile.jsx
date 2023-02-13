@@ -65,7 +65,7 @@ const EditProfile = (props) => {
                 }
                 else{
                     props.setUserData(userdata);
-                    navigate("/profile");
+                    navigate("/profile",{state:{editprofile:'successfull'}});
                     // setEditProfile("Profile Updated Successfully!");//green
                 }
             }

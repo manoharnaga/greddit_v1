@@ -16,7 +16,7 @@ const Home = (props) => {
 
   return (
     <div>
-      <div className="navbar navbar-expand-lg">
+      <div className="navbar navbar-expand-lg" style={{backgroundColor:'',color:'#'}}>
         <a className="navbar-brand" href="/">
           <AdbIcon color="primary"/>
           <Button>Greddiit</Button>
