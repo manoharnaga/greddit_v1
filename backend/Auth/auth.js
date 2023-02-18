@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const bcrypt = require("bcrypt");
 const db = require("../models/User");
 
 router.post("/register", async (req, res) => {
@@ -19,17 +19,20 @@ router.post("/register", async (req, res) => {
     return res.json({ status: "All Fields are required!!" });
   }
   try {
-    // const oldUser = await db.findOne({ username });
-    // if(oldUser){
-    //   res.send({status:"Username already exists!!"});
-    // }
-    // else{
-    const newData = new db(req.body);
-    await newData
-      .save()
-      .then((data) => res.json(data))
-      .catch((error) => console.error("Error:", error));
-    // }
+    const oldUser = await db.findOne({ username: username });
+    if(oldUser){
+      return res.json({ status: "Username already exists!!" });
+    }
+    else{
+      const hashedPassword = await bcrypt.hash(password, 10);
+      req.body.password = hashedPassword;
+
+      const newData = new db(req.body);
+      await newData
+        .save()
+        .then((data) => res.json(data))
+        .catch((error) => console.error("Error:", error));
+    }
   } catch (error) {
     res.send({ status: "Error submitting new UserRegistration!" });
   }
@@ -37,12 +40,19 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  const user = await db.findOne({ username, password });
+  const user = await db.findOne({ username: username });
   // check if user exists -- empty fields are also handled
   if (!user) {
-    return res.json({ status: "User Doesn't Exist!", username, password });
+    return res.json({ status: "User Doesn't Exist!", username});
   }
-  //bcrypt + jwt(token)
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if(!isMatch){
+    return res.status(401).json({ status: "User Doesn't Exist!", username});
+  }
+
+  // jwt(token)
   if (res.status(201)) {
     return res.json({ status: "Login successful!", user });
   } else {

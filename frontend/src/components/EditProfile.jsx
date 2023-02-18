@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import Navbar from "./Navbar"
 
 
 const EditProfile = (props) => {
@@ -78,6 +79,10 @@ const EditProfile = (props) => {
 
     return (
         <div>
+            <Navbar Loginval={props.Loginval}
+              Loginfunc={props.Loginfunc}
+              userData={props.userData}
+              setUserData={props.setUserData}/>
             <h1>Edit Profile</h1>
             <div>
                 <form onSubmit={handleEditProfile}>
@@ -87,7 +92,7 @@ const EditProfile = (props) => {
                     <input onChange={handleEditProfileChange} value={ProfileData.emailid} type="email" name="emailid" placeholder="Email Id" className="form-control" />
                     <input onChange={handleEditProfileChange} value={ProfileData.age} type="number" name="age" placeholder="Age" className="form-control" />
                     <input onChange={handleEditProfileChange} value={ProfileData.phno} type="tel" name="phno" placeholder="Phone Number" className="form-control" />
-                    <input onChange={handleEditProfileChange} value={ProfileData.password} type="password" name="password" placeholder="Password" className="form-control" />
+                    <input onChange={handleEditProfileChange} type="password" name="password" placeholder="New/Old Password" className="form-control" />
                     <button type="submit" className="btn btn-lg btn-primary">
                     Submit Profile
                     </button>

@@ -4,8 +4,8 @@
 
 
 ### FIX BUGS/Submission format
-- navbar
-- unique username  
+<!-- - navbar -->
+<!-- - unique username   -->
 - add edit profile option in profile page
 - implement a loader if unsure about login -->
 - status codes to res.json

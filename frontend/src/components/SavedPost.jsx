@@ -18,6 +18,7 @@ import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
+import Navbar from "./Navbar"
 
 const SavedPost = (props) => {
   const [AkaSubGreddits,setAkaSubGreddits] = useState();
@@ -258,6 +259,10 @@ const SavedPost = (props) => {
 
   return (
     <div>
+      <Navbar Loginval={props.Loginval}
+              Loginfunc={props.Loginfunc}
+              userData={props.userData}
+              setUserData={props.setUserData}/>
       <h1>Saved Posts</h1>
       {AkaSubGreddits?.map((subgreddit) => (
         subgreddit?.post?.map((postobj) => (

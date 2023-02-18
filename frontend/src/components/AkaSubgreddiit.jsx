@@ -24,6 +24,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
+import Navbar from "./Navbar"
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -251,6 +252,10 @@ const AkaSubGreddit = (props) => {
   
   return (
   <div>
+    <Navbar Loginval={props.Loginval}
+              Loginfunc={props.Loginfunc}
+              userData={props.userData}
+              setUserData={props.setUserData}/>
     <h1>Helo AkaSubGreddit</h1>
     <Search>
       <SearchIconWrapper>

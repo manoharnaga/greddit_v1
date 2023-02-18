@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
+import Navbar from "./Navbar"
 
 
 function TabPanel(props) {
@@ -323,6 +324,10 @@ const SubGredditMod = (props) => {
 
     return (
       <div>
+      <Navbar Loginval={props.Loginval}
+            Loginfunc={props.Loginfunc}
+            userData={props.userData}
+            setUserData={props.setUserData}/>
       <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>

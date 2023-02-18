@@ -15,6 +15,8 @@ import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { Typography } from "@mui/material";
+import Navbar from "./Navbar"
+
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -78,6 +80,10 @@ const Profile = (props) => {
 
   return (
     <div>
+      <Navbar Loginval={props.Loginval}
+              Loginfunc={props.Loginfunc}
+              userData={props.userData}
+              setUserData={props.setUserData}/>
       <TableContainer component={Paper} className="container">
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>

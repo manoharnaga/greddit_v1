@@ -41,6 +41,7 @@ const LoginReg = (props) => {
   const [inpError, setError] = useState(0);
   const [LoginDisabled, setLoginDisabled] = useState(1);
   const [RegisterDisabled, setRegisterDisabled] = useState(1);
+  const [uniqueUserErr, setUniqueUserErr] = useState(false);
 
   const [loginData, setLogindata] = useState({
     username: "",
@@ -55,8 +56,8 @@ const LoginReg = (props) => {
     age: "",
     phno: "",
     password: "",
-    followers: ["abc", "abc1", "abc2", "abc3"],
-    following: ["abc", "abc1", "abc2", "abc3"],
+    followers: [],
+    following: [],
   });
 
   if (props.Loginval === "true") {
@@ -85,8 +86,7 @@ const LoginReg = (props) => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    if (RegisterDisabled === 1) return;
-    setUser(0); // correct input
+    if (RegisterDisabled) return;
     await fetch(`http://localhost:7000/auth/register`, {
       method: "POST",
       crossDomain: true,
@@ -98,7 +98,15 @@ const LoginReg = (props) => {
       },
     })
       .then((res) => res.json())
-      .then((data) => console.log(data))
+      .then((data) => {
+        console.log(data);
+        if(data.status === "Username already exists!!"){
+          setUniqueUserErr(true);
+        }
+        else{
+          setUser(0); // correct input
+        }
+      })
       .catch((error) => console.error("Error:", error));
   };
 
@@ -171,6 +179,9 @@ const LoginReg = (props) => {
             <Typography component="h1" variant="h5">
               Sign up
             </Typography>
+            {uniqueUserErr ? (
+              <p style={{ color: "red" }}>username already exists!</p>
+            ) : null}
             <Box
               component="form"
               noValidate
@@ -295,6 +306,7 @@ const LoginReg = (props) => {
                       e.preventDefault();
                       setError(0);
                       setUser(0);
+                      setUniqueUserErr(false);
                       setRegisterData({
                         fname: "",
                         lname: "",

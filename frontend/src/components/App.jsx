@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 
 import LoginReg from "./LoginReg";
-import Navbar from "./Navbar";
+// import Navbar from "./Navbar";
+import Home from "./Home";
 import Profile from "./Profile";
 import MySubGreddits from "./MySubgreddits";
 import SubGredditMod from "./SubgredditMod";
@@ -10,7 +11,7 @@ import AkaSubGreddit from "./AkaSubgreddiit";
 import Post from "./Post";
 
 import * as React from "react";
-import { Toolbar } from "@mui/material";
+// import { Toolbar } from "@mui/material";
 import SavedPost from "./SavedPost";
 import EditProfile from "./EditProfile";
 
@@ -70,22 +71,11 @@ const App = () => {
 
   return (
     <div>
-      <React.Fragment>
-        <Navbar
-          Loginval={isLoggedin}
-          Loginfunc={setLogin}
-          userData={userData}
-          setUserData={setUserData}
-          position="fixed"
-        >
-          <Toolbar>content</Toolbar>
-        </Navbar>
-        <Toolbar />
-      </React.Fragment>
-
-      <nav>
+      {/* <nav>
         <ul>
-          {/* <li><Link to="/">Home</Link></li> */}
+          <li>
+            <Link to="/">Home</Link>
+          </li>
           <li>
             <Link to="/login">Login</Link>
           </li>
@@ -105,9 +95,20 @@ const App = () => {
             <Link to="/savedpost">SavedPosts</Link>
           </li>
         </ul>
-      </nav>
+      </nav> */}
       <Routes>
-        {/* <Route exact path="/" element={<Home  />  */}
+        <Route
+          exact
+          path="/"
+          element={
+            <Home
+              Loginval={isLoggedin}
+              Loginfunc={setLogin}
+              userData={userData}
+              setUserData={setUserData}
+            />
+          }
+        />
         <Route
           exact
           path="/login"

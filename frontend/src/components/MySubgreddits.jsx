@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import PeopleIcon from '@mui/icons-material/People';
+import Navbar from "./Navbar"
 
 
 const MySubGreddits = (props) => {
@@ -23,9 +24,9 @@ const MySubGreddits = (props) => {
     moderator: "",
     name: "",
     description: "",
-    joined: ["u1","u2","u3","u4","u5"],
-    requested: ["r1","r2","r3","r4","r5"],
-    blocked: ["b1","b2","b3"],
+    joined: [],
+    requested: [],
+    blocked: [],
     tags: [],
     bannedKeywords: [],
     post: []
@@ -141,7 +142,7 @@ const MySubGreddits = (props) => {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        // window.location.reload(false);
+        window.location.reload(false);
       })
       .catch((error) => console.error("Error:", error));
   };
@@ -219,6 +220,10 @@ const MySubGreddits = (props) => {
 
   return (
     <div>
+      <Navbar Loginval={props.Loginval}
+              Loginfunc={props.Loginfunc}
+              userData={props.userData}
+              setUserData={props.setUserData}/>
       <h1>My SubGreddiits</h1>
       <Box
           component="form"

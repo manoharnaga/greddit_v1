@@ -21,6 +21,7 @@ import Link from '@mui/material/Link';
 import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
 import Grid from '@mui/material/Grid';
 import backgroundImage from '../butterfly.jpg';
+import Navbar from "./Navbar"
 
 const style = {
     position: 'absolute',
@@ -435,6 +436,10 @@ const Post = (props) => {
 
   return (
   <div>
+      <Navbar Loginval={props.Loginval}
+              Loginfunc={props.Loginfunc}
+              userData={props.userData}
+              setUserData={props.setUserData}/>
       <h1>Posts Page</h1>
       <div>
           <Box sx={{
