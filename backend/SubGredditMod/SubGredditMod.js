@@ -85,7 +85,7 @@ router.put("/delpost", async (req, res) => {
 
 
 router.put("/blockuser", async (req, res) => {
-  const { subid, reportedVictim } = req.body;
+  const { subid, postid,reportedVictim } = req.body;
   const MySubgredditMod = await Subgreddit.findOne({ _id: subid });
   // check if any Subgreddit exists -- empty fields are also handled
   if (!MySubgredditMod) {
@@ -94,14 +94,15 @@ router.put("/blockuser", async (req, res) => {
   try {
     
 
-    if(MySubgredditMod.joined.includes(reportedVictim)){
-      MySubgredditMod.joined = MySubgredditMod.joined.filter((joinedUser) => {
-        return joinedUser !== reportedVictim;
-      })
-    }
+    // if(MySubgredditMod.joined.includes(reportedVictim)){
+    //   MySubgredditMod.joined = MySubgredditMod.joined.filter((joinedUser) => {
+    //     return joinedUser !== reportedVictim;
+    //   })
+    // }
 
     if(!MySubgredditMod.blocked.includes(reportedVictim)){
       MySubgredditMod.blocked.push(reportedVictim);
+      MySubgredditMod.post[postid].postedBy = "Blocked User";
     }
 
     await MySubgredditMod.save()

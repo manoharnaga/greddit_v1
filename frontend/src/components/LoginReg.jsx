@@ -75,13 +75,14 @@ const LoginReg = (props) => {
 
     let checkRegister = 1;
     for (const key in RegisterData) {
-      if (key !== e.target.name) {
+      if (key !== e.target.name && (key!=="followers" && key!=="following")) {
         checkRegister = checkRegister && RegisterData[key].length > 0;
         // console.log(RegisterData[key]);
       }
     }
     // console.log(checkRegister,e.target.value);
     setRegisterDisabled(!(checkRegister && e.target.value.length > 0));
+    // console.log(RegisterDisabled);
   };
 
   const handleRegister = async (e) => {

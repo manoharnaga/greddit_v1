@@ -6,7 +6,7 @@ const Home = (props) => {
               Loginfunc={props.Loginfunc}
               userData={props.userData}
               setUserData={props.setUserData}/>
-            <h1>Home</h1>
+            <h1>Welcome to Greddiit!</h1>
         </div>
     )
 }

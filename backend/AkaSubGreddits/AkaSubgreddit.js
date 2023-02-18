@@ -78,7 +78,7 @@ router.post("/data", async (req, res) => {
   const AkaSubgredditPost = await Subgreddit.findOne({ _id: id });
   // check if any Subgreddit exists -- empty fields are also handled
   if (!AkaSubgredditPost) {
-    return res.json({ status: "No AkaSubgredditPost found!", moderator });
+    return res.json({ status: "No AkaSubgredditPost found!", id });
   }
   if (res.status(201)) {
     return res.json({

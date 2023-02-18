@@ -96,8 +96,9 @@ const Post = (props) => {
           console.error("Error:", error)
         });
     };
-    getSubGredditData();
-
+    if (JSON.parse(localStorage.getItem("login-key")) === "true") {
+      getSubGredditData();
+    }
   },[]);
   
   const handlePostConcernChange = (e) => {
@@ -472,7 +473,7 @@ const Post = (props) => {
           </Modal>
       </div>
       <Grid container my={2}>
-        <Grid xs={12} md={4}  sx={{
+        <Grid item xs={12} md={4}  sx={{
           backgroundImage: `url(${backgroundImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
@@ -484,7 +485,7 @@ const Post = (props) => {
           <h1 style={{opacity:1}}>{SubGredditData?.name}</h1>
           <h2>{SubGredditData?.description}</h2>
         </Grid>
-        <Grid xs={12} md={8} sx={{
+        <Grid item xs={12} md={8} sx={{
           margin:'15rem',
         }}>
         {SubGredditData?.post?.map((postobj) => (

@@ -244,7 +244,7 @@ const AkaSubGreddit = (props) => {
         {isJoined ? 
         <Button size="small" onClick={() => joinOrLeaveSubGreddit(_id,2)} disabled={(moderator===props.userData.username)}>LEAVE</Button>
         : null }
-        <Button size="small" onClick={() => OpenSubGreddit(_id)}>OPEN</Button>
+        <Button size="small" onClick={() => OpenSubGreddit(_id)} disabled={!isJoined}>OPEN</Button>
       </CardActions>
     </React.Fragment>
     );

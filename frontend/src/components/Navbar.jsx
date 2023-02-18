@@ -20,6 +20,7 @@ import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ModeIcon from "@mui/icons-material/Mode";
+import SaveIcon from '@mui/icons-material/Save';
 
 const pages = [
   "home",
@@ -141,7 +142,7 @@ const Navbar = (props) => {
               textDecoration: "none",
             }}
           >
-            GREDDIIT
+            Greddiit
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             <Button
@@ -203,6 +204,18 @@ const Navbar = (props) => {
               }}
             >
               Subgreddits
+            </Button>
+            <Button
+              startIcon={<SaveIcon style={{ fontSize: "1.75rem" }} />}
+              onClick={() => handleCloseNavMenu("savedpost")}
+              sx={{
+                my: 2,
+                color: "white",
+                display: "block",
+                fontSize: "0.8rem",
+              }}
+            >
+              Saved Posts
             </Button>
             <Button
               startIcon={

@@ -6,13 +6,14 @@
 ### FIX BUGS/Submission format
 <!-- - navbar -->
 <!-- - unique username   -->
-- add edit profile option in profile page
+<!-- - add edit profile option in profile page -->
+<!-- - print comma separated banned keyword -->
+<!-- - fix tags submitting on pressing enter in Mysubgreddits -->
+<!-- - load page on refresh not handled -- SubgredditMod -->
+<!-- - do block post, delete post -->
 - implement a loader if unsure about login -->
 - status codes to res.json
 - handle async & await
-- print comma separated banned keyword
-- fix tags submitting on pressing enter in Mysubgreddits
-- load page on refresh not handled -- SubgredditMod
 - cleanup localstorage -- SubgredditMod,wherever used && see useEffect Cleanup
 
 
@@ -23,13 +24,14 @@
 
 ## Claims
 - **After Login user is Redirected to Home Page Not Profile Page**
+- Remember Me option won't work(but still the user won't be asked to login again)
 - All fields are required in registration/login - Empty fields are not allowed
 - username is used to identify users in 'Followers/Following'
 - both Followers/Following won't be shown at once - only one of two will be displayed
 - SubGredditMod -- Moderator of MySubgredditsPage
 - Aka Subgreddits - All Subgreddits
 - we store upvotes as list of id's/usernames of users who upvoted/downvoted
-
+- tags are also shown for a subgreddit in mysubgreddiits page
 
 - upvotes - downvotes - invert
 
@@ -38,9 +40,6 @@
         - SubgredditMod
 
 
-
-- do block post, delete post
-<!-- - Toggle between Followers/Following - only one of two will be displayed -->
 
 
 
