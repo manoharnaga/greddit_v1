@@ -18,7 +18,6 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -372,6 +371,8 @@ const SubGredditMod = (props) => {
         userData={props.userData}
         setUserData={props.setUserData}
       />
+      <br /><br /><br /><br />
+
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
@@ -387,7 +388,7 @@ const SubGredditMod = (props) => {
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
-          <TableContainer component={Paper} className="container">
+          <TableContainer className="container">
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableBody>
                 {SubGredditData?.joined?.map((user, index) => (
@@ -395,7 +396,7 @@ const SubGredditMod = (props) => {
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     key={index}
                   >
-                    <TableCell align="center" style={{ fontSize: "125%" }}>
+                    <TableCell align="center" style={{ fontSize: "115%",border: 0 }}>
                       <Typography
                         color={
                           !(SubGredditData?.blocked?.includes(user))
@@ -403,7 +404,7 @@ const SubGredditMod = (props) => {
                             : "grey"
                         }
                         
-                        style={{ fontSize: "125%" }} 
+                        style={{ fontSize: "115%" }} 
                         // style={{ fontSize: "125%", color: "#656768" }}
                       >
                         {user}
@@ -414,23 +415,6 @@ const SubGredditMod = (props) => {
               </TableBody>
             </Table>
           </TableContainer>
-
-          <div>
-            <table>
-              <tbody>
-                {SubGredditData?.joined?.map((user, index) => (
-                  <tr key={index}>
-                    <td>{user}</td>
-                  </tr>
-                ))}
-                {SubGredditData?.blocked?.map((blocked, index) => (
-                  <tr key={index}>
-                    <td>{blocked}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         </TabPanel>
         <TabPanel value={value} index={1}>
           <div>

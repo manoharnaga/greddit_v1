@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcrypt");
 
 const db = require("../models/User");
 
@@ -66,14 +67,16 @@ router.put("/editprofile", async (req, res) => {
     return res.json({ status: "User Not Found!", username });
   }
   try {
-
+    
     user.fname      = fname        
     user.lname      = lname 
     user.username   = username 
     user.emailid    = emailid 
     user.age        = age 
     user.phno       = phno 
-    user.password   = password 
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
 
     let Changedlogin = "no";
     if(prevPassword !== password || prevUsername !== username){

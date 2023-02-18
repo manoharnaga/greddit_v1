@@ -232,15 +232,21 @@ const MySubGreddits = (props) => {
   };
 
   return (
-    <div>
+    <Box>
       <Navbar
         Loginval={props.Loginval}
         Loginfunc={props.Loginfunc}
         userData={props.userData}
         setUserData={props.setUserData}
       />
-      <h1>My SubGreddiits</h1>
-      <Button style={{margin:'3% 40% 3% 40%'}} variant="contained" onClick={() => setNewSubGreddit("")}>
+      <br /><br /><br /><br />
+
+      <Button
+        
+        style={{ margin: "3% 40% 3% 40%"}}
+        variant="contained"
+        onClick={() => setNewSubGreddit("")}
+      >
         Create SubGreddit
       </Button>
       <Box
@@ -313,16 +319,24 @@ const MySubGreddits = (props) => {
             placeholder="Press SPACE to add banned keywords.."
           />
         </div>
-        <Button type="submit" variant="contained" disabled={SubGredditDisabled}>
-          Submit
-        </Button>
-        <Button
-          onClick={() => setNewSubGreddit("none")}
-          variant="contained"
-          style={{ backgroundColor: "#656768" }}
-        >
-          Close
-        </Button>
+        <Box style={{ textAlign: "center" }}>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={SubGredditDisabled}
+            style={{ width: "100%" }}
+          >
+            Submit
+          </Button>
+          <br />
+          <Button
+            onClick={() => setNewSubGreddit("none")}
+            variant="contained"
+            style={{ backgroundColor: "#656768", width: "100%" }}
+          >
+            Close
+          </Button>
+        </Box>
       </Box>
       {MySubGreddits?.map((subgreddit, index) => (
         <Box key={index} sx={{ minWidth: 275 }}>
@@ -339,7 +353,7 @@ const MySubGreddits = (props) => {
           </Card>
         </Box>
       ))}
-    </div>
+    </Box>
   );
 };
 

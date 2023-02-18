@@ -441,7 +441,9 @@ const Post = (props) => {
               Loginfunc={props.Loginfunc}
               userData={props.userData}
               setUserData={props.setUserData}/>
-      <h1>Posts Page</h1>
+      <br /><br /><br /><br /><br />
+      
+      {/* <h1>Posts Page</h1> */}
       <div>
           <Box sx={{
             // position:'relative',

@@ -84,6 +84,7 @@ const Profile = (props) => {
               Loginfunc={props.Loginfunc}
               userData={props.userData}
               setUserData={props.setUserData}/>
+      <br /><br /><br /><br /><br />
       <TableContainer component={Paper} className="container">
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -99,8 +100,8 @@ const Profile = (props) => {
             <TableRow
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell style={{ fontSize: "125%" }}>First Name</TableCell>
-              <TableCell style={{ fontSize: "125%" }}>
+              <TableCell >First Name</TableCell>
+              <TableCell >
                 {props.userData.fname}
               </TableCell>
             </TableRow>
@@ -108,8 +109,8 @@ const Profile = (props) => {
             <TableRow
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell style={{ fontSize: "125%" }}>Last Name:</TableCell>
-              <TableCell style={{ fontSize: "125%" }}>
+              <TableCell >Last Name:</TableCell>
+              <TableCell >
                 {props.userData.lname}
               </TableCell>
             </TableRow>
@@ -117,8 +118,8 @@ const Profile = (props) => {
             <TableRow
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell style={{ fontSize: "125%" }}>User Name:</TableCell>
-              <TableCell style={{ fontSize: "125%" }}>
+              <TableCell >User Name:</TableCell>
+              <TableCell >
                 {props.userData.username}
               </TableCell>
             </TableRow>
@@ -126,8 +127,8 @@ const Profile = (props) => {
             <TableRow
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell style={{ fontSize: "125%" }}>Email id:</TableCell>
-              <TableCell style={{ fontSize: "125%" }}>
+              <TableCell >Email id:</TableCell>
+              <TableCell >
                 {props.userData.emailid}
               </TableCell>
             </TableRow>
@@ -135,8 +136,8 @@ const Profile = (props) => {
             <TableRow
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell style={{ fontSize: "125%" }}>Age:</TableCell>
-              <TableCell style={{ fontSize: "125%" }}>
+              <TableCell >Age:</TableCell>
+              <TableCell >
                 {props.userData.age}
               </TableCell>
             </TableRow>
@@ -144,8 +145,8 @@ const Profile = (props) => {
             <TableRow
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell style={{ fontSize: "125%" }}>Phone No:</TableCell>
-              <TableCell style={{ fontSize: "125%" }}>
+              <TableCell >Phone No:</TableCell>
+              <TableCell >
                 {props.userData.phno}
               </TableCell>
             </TableRow>
@@ -208,10 +209,10 @@ const Profile = (props) => {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 key={index}
               >
-                <TableCell align="center" style={{ fontSize: "125%" }}>
+                <TableCell align="center" >
                   {follower}
                 </TableCell>
-                <TableCell align="center" style={{ fontSize: "125%" }}>
+                <TableCell align="center" >
                   <Button
                     variant="contained"
                     size="large"
@@ -257,10 +258,10 @@ const Profile = (props) => {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 key={index}
               >
-                <TableCell align="center" style={{ fontSize: "125%" }}>
+                <TableCell align="center" >
                   {following}
                 </TableCell>
-                <TableCell align="center" style={{ fontSize: "125%" }}>
+                <TableCell align="center" >
                   <Button
                     variant="contained"
                     size="large"
