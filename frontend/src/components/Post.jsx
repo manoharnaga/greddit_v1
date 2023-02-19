@@ -302,7 +302,7 @@ const Post = (props) => {
         <Typography variant="body1">
           {Text}
         </Typography>
-        <Link href="#" underline="none">
+        <Link underline="none">
           Comments
         </Link>
         <TextField id="standard-basic" label="Standard" variant="standard" name="comment" onChange={handlePostCommentChange}/>
@@ -318,14 +318,15 @@ const Post = (props) => {
               userId: voteUserId
             }
           }
-
+          
           handleUpdatePost(UpdatePost);
-
+          setComment('');
+          setCommentDisabled(true);
         }
         }>SAVE</Button>
         <Button onClick={() => {
           setComment('');
-          setCommentDisabled(false);
+          setCommentDisabled(true);
         }}>CANCEL</Button>
 
         {comments?.map((comment,index) => (
