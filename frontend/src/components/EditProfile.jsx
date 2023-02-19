@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -13,19 +14,37 @@ import { Typography } from "@mui/material";
 
 const EditProfile = (props) => {
   const [ProfileData, setProfileData] = useState({
-    prevUsername: props.userData.username,
-    prevPassword: props.userData.password,
-    fname: props.userData.fname,
-    lname: props.userData.lname,
-    username: props.userData.username,
-    emailid: props.userData.emailid,
-    age: props.userData.age,
-    phno: props.userData.phno,
-    password: props.userData.password,
+    prevUsername: '',
+    prevPassword: '',
+    fname: '',
+    lname: '',
+    username: '',
+    emailid: '',
+    age: '',
+    phno: '',
+    password: ''
   });
 
   // const [EditProfile,setEditProfile] = useState("openEditProfilePage");
-  const [EditProfileDisabled, setEditProfileDisabled] = useState(false);
+  const [EditProfileDisabled, setEditProfileDisabled] = useState(true);
+  const [allFieldsReq,setAllFieldsReq] = useState(false);
+
+  let location = useLocation();
+  useEffect(() => {
+    setProfileData({
+      prevUsername: props.userData.username?.toString(),
+      prevPassword: props.userData.password?.toString(),
+      fname: props.userData.fname?.toString(),
+      lname: props.userData.lname?.toString(),
+      username: props.userData.username?.toString(),
+      emailid: props.userData.emailid?.toString(),
+      age: props.userData.age?.toString(),
+      phno: props.userData.phno?.toString(),
+      password: ''
+    });
+  }, [props,location.pathname]);
+
+  
   let navigate = useNavigate();
 
   if (props.Loginval === "false") {
@@ -41,7 +60,7 @@ const EditProfile = (props) => {
 
     let checkEditProfile = 1;
     for (const key in ProfileData) {
-      if (key !== e.target.name) {
+      if (key !== e.target.name && key !== "prevUsername" && key !== "prevPassword") {
         checkEditProfile = checkEditProfile && ProfileData[key].length > 0;
       }
     }
@@ -63,18 +82,17 @@ const EditProfile = (props) => {
       .then((res) => res.json())
       .then((data) => {
         console.log("profile edits", data);
+        if(data.status === "All Fields are required!!"){
+          setAllFieldsReq(true);
+        }
         if (data.status === "profile edited") {
-          const userdata = data.data;
-          if (data.Changedlogin !== "no") {
-            console.log("changed");
-            // localStorage.setItem("username", JSON.stringify(userdata.username));
-            // localStorage.setItem("password", JSON.stringify(userdata.password));
-            props.Loginfunc("false");
-          } else {
-            props.setUserData(userdata);
-            navigate("/profile", { state: { editprofile: "successfull" } });
-            // setEditProfile("Profile Updated Successfully!");//green
-          }
+          // const userdata = data.data;
+          props.Loginfunc("false");
+          // else {
+          //   props.setUserData(userdata);
+          //   navigate("/profile", { state: { editprofile: "successfull" } });
+          //   // setEditProfile("Profile Updated Successfully!");//green
+          // }
         }
       })
       .catch((error) => {
@@ -102,6 +120,15 @@ const EditProfile = (props) => {
                   </Typography>
                 </TableCell>
               </TableRow>
+              {allFieldsReq &&
+              <TableRow>
+                <TableCell align="center" colSpan={2}>
+                  <p style={{color:'red'}}>
+                    All Fields are required!!
+                  </p>
+                </TableCell>
+              </TableRow>
+            }
             </TableHead>
             <TableBody>
               <TableRow
@@ -110,6 +137,7 @@ const EditProfile = (props) => {
                 <TableCell >First Name</TableCell>
                 <TableCell >
                   <input
+                    required
                     onChange={handleEditProfileChange}
                     value={ProfileData.fname}
                     type="text"
@@ -126,6 +154,7 @@ const EditProfile = (props) => {
                 <TableCell >Last Name:</TableCell>
                 <TableCell >
                   <input
+                    required
                     onChange={handleEditProfileChange}
                     value={ProfileData.lname}
                     type="text"
@@ -142,6 +171,7 @@ const EditProfile = (props) => {
                 <TableCell >User Name:</TableCell>
                 <TableCell >
                   <input
+                    required
                     onChange={handleEditProfileChange}
                     value={ProfileData.username}
                     type="text"
@@ -158,6 +188,7 @@ const EditProfile = (props) => {
                 <TableCell >Email id:</TableCell>
                 <TableCell >
                   <input
+                    required
                     onChange={handleEditProfileChange}
                     value={ProfileData.emailid}
                     type="email"
@@ -174,6 +205,7 @@ const EditProfile = (props) => {
                 <TableCell >Age:</TableCell>
                 <TableCell >
                   <input
+                    required
                     onChange={handleEditProfileChange}
                     value={ProfileData.age}
                     type="number"
@@ -190,6 +222,7 @@ const EditProfile = (props) => {
                 <TableCell >Phone No:</TableCell>
                 <TableCell >
                   <input
+                    required
                     onChange={handleEditProfileChange}
                     value={ProfileData.phno}
                     type="tel"
@@ -203,10 +236,12 @@ const EditProfile = (props) => {
               <TableRow
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                <TableCell >Phone No:</TableCell>
+                <TableCell >Password:</TableCell>
                 <TableCell >
                   <input
+                    required
                     onChange={handleEditProfileChange}
+                    value={ProfileData.password}
                     type="password"
                     name="password"
                     placeholder="New/Old Password"
@@ -224,6 +259,7 @@ const EditProfile = (props) => {
                     onClick={(e) => {
                       handleEditProfile(e);
                     }}
+                    disabled={EditProfileDisabled}
                   >
                     Submit Profile
                   </Button>

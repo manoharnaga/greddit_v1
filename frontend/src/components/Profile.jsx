@@ -34,7 +34,7 @@ const Profile = (props) => {
   const [open, setOpen] = useState(() => {
     let flag = location?.state?.editprofile === "successfull";
     location.state = {};
-    console.log(flag);
+    // console.log(flag);
     return flag;
   });
 

@@ -53,7 +53,6 @@ router.put("/followers", async (req, res) => {
 router.put("/editprofile", async (req, res) => {
   const { 
     prevUsername,
-    prevPassword,
     fname,
     lname,
     username,
@@ -61,13 +60,30 @@ router.put("/editprofile", async (req, res) => {
     age,
     phno,
     password } = req.body;
+
+  isRequired =
+    prevUsername.length > 0 &&
+    fname.length > 0 &&
+    lname.length > 0 &&
+    username.length > 0 &&
+    emailid.length > 0 &&
+    age.length > 0 &&
+    phno.length > 0 &&
+    password.length > 0;
+    
+  console.log(req.body);
+
+  if (!isRequired) {
+    return res.json({ status: "All Fields are required!!" });
+  }
+  
   const user = await db.findOne({ username: prevUsername });
-  console.log("editprofile", req.body);
+  // console.log("editprofile", req.body);
   if (!user) {
     return res.json({ status: "User Not Found!", username });
   }
+
   try {
-    
     user.fname      = fname        
     user.lname      = lname 
     user.username   = username 
@@ -78,14 +94,15 @@ router.put("/editprofile", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     user.password = hashedPassword;
 
-    let Changedlogin = "no";
-    if(prevPassword !== password || prevUsername !== username){
-      Changedlogin = "yes"
-    }
+    
+    // let Changedlogin = "no";
+    // if(prevPassword !== password || prevUsername !== username){
+    //   Changedlogin = "yes"
+    // }
     console.log('User edited');
     await user
       .save()
-      .then((data) => res.json({ status: "profile edited", data,Changedlogin:Changedlogin }))
+      .then((data) => res.json({ status: "profile edited", data}))
       .catch((error) => console.error("Error:", error));
   } catch (error) {
     res.status(500).send({ status: "Error updating Profile!" });

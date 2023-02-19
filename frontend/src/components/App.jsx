@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import LoginReg from "./LoginReg";
 // import Navbar from "./Navbar";
@@ -17,8 +17,8 @@ import EditProfile from "./EditProfile";
 
 const App = () => {
   const [isLoggedin, setLogin] = useState(() => {
-    const initialValue = JSON.parse(localStorage.getItem("login-key"));
-    return initialValue || "";
+    // const initialValue = JSON.parse(localStorage.getItem("login-key"));
+    return "";
   });
   const [userData, setUserData] = useState(0);
 
@@ -31,15 +31,15 @@ const App = () => {
     // function to be called on page load/refresh
     const loginDatafunc = () => {
       const usernameSaved = JSON.parse(localStorage.getItem("username"));
-      const passwordSaved = JSON.parse(localStorage.getItem("password"));
-      return { username: usernameSaved || "", password: passwordSaved || "" };
+      // const passwordSaved = JSON.parse(localStorage.getItem("password"));
+      return { username: usernameSaved || ""};
     };
 
     let loginData = loginDatafunc();
     const userObj = async () => {
       console.log("Page loaded/refreshed");
       console.log("logindata from localStorage", loginData);
-      await fetch(`http://localhost:7000/auth/login`, {
+      await fetch(`http://localhost:7000/auth/loginstore`, {
         method: "POST",
         crossDomain: true,
         body: JSON.stringify(loginData),
@@ -52,9 +52,9 @@ const App = () => {
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
-
           if (data.status === "Login successful!") {
             const userdata = data.user;
+            setLogin("true");
             setUserData(userdata);
           } else {
             console.log("Unable to fetch User Data! - App.jsx");
@@ -64,9 +64,9 @@ const App = () => {
           console.error("Error:", error);
         });
     };
-    if (JSON.parse(localStorage.getItem("login-key")) === "true") {
+    // if (JSON.parse(localStorage.getItem("login-key")) === "true") {
       userObj();
-    }
+    // }
   }, []);
 
   return (

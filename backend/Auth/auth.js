@@ -60,4 +60,21 @@ router.post("/login", async (req, res) => {
   }
 });
 
+
+router.post("/loginstore", async (req, res) => {
+  const { username } = req.body;
+  const user = await db.findOne({ username: username });
+  // check if user exists -- empty fields are also handled
+  if (!user) {
+    return res.json({ status: "User Doesn't Exist!", username});
+  }
+  
+  // jwt(token)
+  if (res.status(201)) {
+    return res.json({ status: "Login successful!", user });
+  } else {
+    return res.json({ status: "Error: Login Unsuccessful!" });
+  }
+});
+
 module.exports = router;

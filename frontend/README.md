@@ -32,7 +32,7 @@
 - Aka Subgreddits - All Subgreddits
 - we store upvotes as list of id's/usernames of users who upvoted/downvoted
 - tags are also shown for a subgreddit in mysubgreddiits page
-
+- **User Has to Login again once he edits the profile**
 - upvotes - downvotes - invert
 
 - AkaSubGreddit
