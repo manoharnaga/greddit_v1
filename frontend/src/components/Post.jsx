@@ -120,7 +120,7 @@ const Post = (props) => {
     // e.preventDefault();
 
     setCommentArr(() => {
-      return CommentArr.map((commentObj) =>
+      return CommentArr?.map((commentObj) =>
         commentObj.postId === postobj_id
           ? {
               postId: commentObj.postId,
@@ -177,7 +177,18 @@ const Post = (props) => {
       .then((data) => {
         console.log("post reached server!", data);
         if (data.status === "Post Created Successfully!") {
-          setSubGredditData(data.SubgredditData);
+          const AkaSubgredditPost = data.AkaSubgredditPost;
+          let commentList = [];
+            AkaSubgredditPost.post.map((postobj) => {
+              commentList.push({
+                postId: postobj._id,
+                comment: "",
+                disabled: true,
+              });
+              return postobj;
+            });
+            setCommentArr(commentList);
+          setSubGredditData(AkaSubgredditPost);
         }
         // window.location.reload(false);
       })
@@ -216,7 +227,7 @@ const Post = (props) => {
       .then((data) => {
         console.log("Report reached server!", data);
         if (data.status === "Report Sent Successfully!") {
-          setSubGredditData(data.SubgredditData);
+          // setSubGredditData(data.SubgredditData);
         }
       })
       .catch((error) => console.error("Error:", error));
@@ -244,7 +255,6 @@ const Post = (props) => {
   };
 
   const handleUpdatePost = (UpdatePost) => {
-    // if (UpdatePost.comment !== "-1") return;
     console.log("UpdatePost");
 
     fetch(`http://localhost:7000/akasubgreddits/updatepost`, {
@@ -339,17 +349,17 @@ const Post = (props) => {
             variant="standard"
             name="comment"
             value={
-              CommentArr.filter((commentObj) => {
+              CommentArr?.filter((commentObj) => {
                 return commentObj.postId === postobj_id;
-              })[0].comment
+              })[0]?.comment
             }
             onChange={(e) => handlePostCommentChange(e, postobj_id)}
           />
           <Button
             disabled={
-              CommentArr.filter((commentObj) => {
+              CommentArr?.filter((commentObj) => {
                 return commentObj.postId === postobj_id;
-              })[0].disabled
+              })[0]?.disabled
             }
             onClick={() => {
               let voteUserId = props.userData.username;
@@ -359,19 +369,19 @@ const Post = (props) => {
                 upvotesid: "-1",
                 downvotesid: "-1",
                 comment: {
-                  comment: CommentArr.filter((commentObj) => {
+                  comment: CommentArr?.filter((commentObj) => {
                     return commentObj.postId === postobj_id;
-                  })[0].comment,
-                  disabled: CommentArr.filter((commentObj) => {
+                  })[0]?.comment,
+                  disabled: CommentArr?.filter((commentObj) => {
                     return commentObj.postId === postobj_id;
-                  })[0].disabled,
+                  })[0]?.disabled,
                   userId: voteUserId,
                 },
               };
 
               handleUpdatePost(UpdatePost);
               setCommentArr(() => {
-                return CommentArr.map((commentObj) =>
+                return CommentArr?.map((commentObj) =>
                   commentObj.postId === postobj_id
                     ? {
                         postId: commentObj.postId,
@@ -388,7 +398,7 @@ const Post = (props) => {
           <Button
             onClick={() => {
               setCommentArr(() => {
-                return CommentArr.map((commentObj) =>
+                return CommentArr?.map((commentObj) =>
                   commentObj.postId === postobj_id
                     ? {
                         postId: commentObj.postId,

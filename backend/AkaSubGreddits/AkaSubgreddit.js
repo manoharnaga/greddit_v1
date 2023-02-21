@@ -220,7 +220,7 @@ router.put("/updatepost", async (req, res) => {
       AkaSubgreddit.post[postid].comments.push(comment.comment);
     }
 
-    console.log("From Backend Updated Post!", AkaSubgreddit);
+    console.log("From Backend Updated Post!", AkaSubgreddit.post[postid].comments);
 
     await AkaSubgreddit.save()
       .then((data) =>
