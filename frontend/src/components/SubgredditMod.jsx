@@ -223,17 +223,19 @@ const SubGredditMod = (props) => {
   };
 
   const handleChange = (event, newValue) => {
-    // if(newValue === 3){
-    //   delTimedOutReports();
-    // }
+    if(newValue === 3){
+      let d = new Date();
+      let curTimeInms = d.getTime();
+      delTimedOutReports(curTimeInms);
+    }
     setValue(newValue);
   };
 
-  const delTimedOutReports = () => {
+  const delTimedOutReports = (curTimeInms) => {
     fetch(`http://localhost:7000/mysubgredditsmod/deltimedoutreports`, {
       method: "PUT",
       crossDomain: true,
-      body: JSON.stringify({ subid: SubGredditData?._id }),
+      body: JSON.stringify({ subid: SubGredditData?._id,curTimeInms:curTimeInms }),
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
