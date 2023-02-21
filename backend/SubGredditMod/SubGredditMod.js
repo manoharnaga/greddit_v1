@@ -120,27 +120,26 @@ router.put("/blockuser", async (req, res) => {
 
 
 router.put("/deltimedoutreports", async (req, res) => {
-  const { subid } = req.body;
+  const { subid,curTimeInms } = req.body;
   const MySubgredditMod = await Subgreddit.findOne({ _id: subid });
   // check if any Subgreddit exists -- empty fields are also handled
   if (!MySubgredditMod) {
     return res.json({ status: "No Subgreddits found!", subid });
   }
   try {
-    const TimedOut = 100000; // 100 seconds
-
-    for (const postobj in MySubgredditMod.post)
-    {
-      for (const reportobj in this.postobj.report)
-      {
-        if(reportobj.CreateTimeInms >= TimedOut){
+    const TimedOut = 1000000; // 1000 seconds
+    
+    MySubgredditMod.post.map((postobj) => {
+      postobj.report.map((reportobj) => {
+        if((curTimeInms - reportobj.CreateTimeInms) >= TimedOut){
+          // console.log(curTimeInms - reportobj.CreateTimeInms);
           MySubgredditMod.post[postobj.id].report 
-          = MySubgredditMod.post[postobj.id].report.filter((reportobj2) => {
-            return reportobj2._id !== reportobj._id
+            = MySubgredditMod.post[postobj.id].report.filter((reportobj2) => {
+              return reportobj2._id !== reportobj._id
           })
         }
-      }
-    }
+      })
+    })
 
     await MySubgredditMod.save()
       .then((data) =>
