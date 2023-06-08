@@ -11,14 +11,14 @@
 <!-- - fix tags submitting on pressing enter in Mysubgreddits -->
 <!-- - load page on refresh not handled -- SubgredditMod -->
 <!-- - do block post, delete post -->
-- implement a loader if unsure about login -->
+<!-- - implement a loader if unsure about login -->
 - status codes to res.json
 - handle async & await
 - cleanup localstorage -- SubgredditMod,wherever used && see useEffect Cleanup
 
 
 -   window.location.reload(false); - remove everywhere and set() data ==> render
-
+ -->
 
 
 
