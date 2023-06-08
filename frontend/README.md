@@ -1,9 +1,9 @@
-# DASS - A1 - Greddiit
+# Greddiit
 
 
 
 
-### FIX BUGS/Submission format
+<!-- ### FIX BUGS/Submission format -->
 <!-- - navbar -->
 <!-- - unique username   -->
 <!-- - add edit profile option in profile page -->
@@ -12,14 +12,12 @@
 <!-- - load page on refresh not handled -- SubgredditMod -->
 <!-- - do block post, delete post -->
 <!-- - implement a loader if unsure about login -->
-- status codes to res.json
-- handle async & await
-- cleanup localstorage -- SubgredditMod,wherever used && see useEffect Cleanup
+<!-- - status codes to res.json -->
+<!-- - handle async & await -->
+<!-- - cleanup localstorage -- SubgredditMod,wherever used && see useEffect Cleanup -->
 
 
--   window.location.reload(false); - remove everywhere and set() data ==> render
- -->
-
+<!-- -   window.location.reload(false); - remove everywhere and set() data ==> render -->
 
 
 ## Claims
@@ -54,28 +52,22 @@
 
 
 
+</br>
+</br>
 
+</br>
+</br>
 
+</br>
+</br>
+</br>
+</br>
 
+</br>
+</br>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</br>
+</br>
 
 
 
